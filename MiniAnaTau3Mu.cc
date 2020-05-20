@@ -1,5 +1,4 @@
 // -*- C++ -*-
-//
 // Package:    MiniAna2017/MiniAnaTau3Mu
 // Class:      MiniAnaTau3Mu
 //
@@ -40,7 +39,7 @@
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
-#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+//#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
@@ -137,7 +136,8 @@ public:
     ~MiniAnaTau3Mu();
     static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
     float dR(float eta1, float eta2, float phi1, float phi2);
-    float dRtriggerMatch(pat::Muon m, trigger::TriggerObjectCollection triggerObjects);
+  //float dRtriggerMatch(pat::Muon m, trigger::TriggerObjectCollection triggerObjects);
+  float dRtriggerMatch(pat::Muon m, vector<pat::TriggerObjectStandAlone> triggerObjects);
     void beginRun(edm::Run const &, edm::EventSetup const&, edm::Event const&);
     
     
@@ -154,11 +154,16 @@ private:
     edm::EDGetTokenT<edm::View<reco::GenParticle> > genParticles_;
     edm::EDGetTokenT<std::vector<PileupSummaryInfo> > puToken_ ;
     edm::EDGetTokenT<edm::TriggerResults> triggerToken_;
+    edm::EDGetTokenT<reco::BeamSpot> token_BeamSpot;
   //edm::EDGetTokenT<trigger::TriggerEvent> trigeventToken_;
     edm::EDGetTokenT<std::vector<pat::TriggerObjectStandAlone> > triggerObjects_;
     edm::EDGetToken algToken_;
     bool isMc;
     bool isAna;
+    bool is2016;
+    bool is2017;
+    bool is2018;
+    bool isBParking;
     //  edm::EDGetTokenT<edm::TriggerResults> trigResultsToken;
     //  edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> trigObjCollToken;
     const TransientTrackBuilder* theTransientTrackBuilder_;
@@ -169,8 +174,11 @@ private:
     l1t::L1TGlobalUtil* gtUtil_;
   TH1F *hEvents;
   TH1F *hEventsAfterGoodCand;
-  //      TH1F *hEventsAfterGoodCand;
-  //    TH1F *hEventsAfterGoodCand;
+ TH1F *  hEventsAfterMu1ID;
+ TH1F *  hEventsAfterMu2ID;
+ TH1F *  hEventsAfterMu3ID;
+ TH1F *  hEventsAfterTauMass;
+
    edm::InputTag algInputTag_;
 
     //tree
@@ -201,12 +209,12 @@ private:
   std::vector<float> Mu1_dRtriggerMatch, Mu2_dRtriggerMatch, Mu3_dRtriggerMatch;
   std::vector<float> Mu1_dRtriggerMatch_Mu7, Mu2_dRtriggerMatch_Mu7, Mu3_dRtriggerMatch_Mu7;
   std::vector<float> Mu1_dRtriggerMatch_Mu8, Mu2_dRtriggerMatch_Mu8, Mu3_dRtriggerMatch_Mu8; 
-  std::vector<float> Mu1_dRtriggerMatch_Mu8_IP5, Mu1_dRtriggerMatch_Mu8_IP6, Mu1_dRtriggerMatch_Mu9_IP0, Mu1_dRtriggerMatch_Mu9_IP3, Mu1_dRtriggerMatch_Mu9_IP4, Mu1_dRtriggerMatch_Mu9_IP5, Mu1_dRtriggerMatch_Mu9_IP6, Mu1_dRtriggerMatch_Mu12_IP6;
-    std::vector<double>     Muon_emEt03, Muon_hadEt03, Muon_nJets03, Muon_nTracks03, Muon_sumPt03, Muon_emEt05,    Muon_hadEt05, Muon_nJets05, Muon_nTracks05, Muon_sumPt05,
-    Muon_hadVetoEt03,Muon_emVetoEt03,    Muon_trackerVetoPt03,    Muon_hadVetoEt05,    Muon_emVetoEt05,    Muon_trackerVetoPt05;
+  std::vector<float> Mu1_dRtriggerMatch_Mu8_IP5, Mu1_dRtriggerMatch_Mu8_IP6, Mu1_dRtriggerMatch_Mu9_IP0, Mu1_dRtriggerMatch_Mu9_IP3, Mu1_dRtriggerMatch_Mu9_IP4, Mu1_dRtriggerMatch_Mu9_IP5, Mu1_dRtriggerMatch_Mu9_IP6,Mu1_dRtriggerMatch_Mu12_IP6,Mu1_dRtriggerMatch_2017, Mu2_dRtriggerMatch_2017, Mu3_dRtriggerMatch_2017;
+
+    std::vector<double> Muon_emEt03, Muon_hadEt03, Muon_nJets03, Muon_nTracks03, Muon_sumPt03, Muon_emEt05,    Muon_hadEt05, Muon_nJets05, Muon_nTracks05, Muon_sumPt05,Muon_hadVetoEt03,Muon_emVetoEt03,    Muon_trackerVetoPt03,    Muon_hadVetoEt05,    Muon_emVetoEt05,    Muon_trackerVetoPt05;
     //dd  Mu1_SimPt,  Mu1_SimEta,  Mu1_SimPhi,  Mu2_SimPt,  Mu2_SimEta,  Mu2_SimPhi, Mu3_SimPt,  Mu3_SimEta,  Mu3_SimPhi,
     
-    std::vector<double>     Triplet_mindca_iso, Triplet_relativeiso;
+  std::vector<double>     Triplet_mindca_iso, Triplet_relativeiso, Triplet_relativeiso2;
  
     std::vector<int>  Mu1_TripletIndex,  Mu2_TripletIndex,  Mu3_TripletIndex;
     std::vector<int>  Mu1_NTracks03iso,  Mu2_NTracks03iso,  Mu3_NTracks03iso;
@@ -238,6 +246,19 @@ private:
 
   std::vector<string>  Trigger_hltname;
   std::vector<int> Trigger_hltdecision;
+
+
+  std::vector<double> MuonPt_HLT,  MuonEta_HLT,  MuonPhi_HLT;
+  std::vector<double> MuonPt_HLT2017, MuonEta_HLT2017, MuonPhi_HLT2017, MuonPt_HLT_BPMu7, MuonEta_HLT_BPMu7, MuonPhi_HLT_BPMu7, MuonPt_HLT_BPMu8, MuonEta_HLT_BPMu8, MuonPhi_HLT_BPMu8, MuonPt_HLT_BPMu8_IP6,  MuonEta_HLT_BPMu8_IP6, MuonPhi_HLT_BPMu8_IP6, MuonPt_HLT_BPMu8_IP5, MuonEta_HLT_BPMu8_IP5, MuonPhi_HLT_BPMu8_IP5,   MuonPt_HLT_BPMu9_IP0, MuonEta_HLT_BPMu9_IP0, MuonPhi_HLT_BPMu9_IP0, MuonPt_HLT_BPMu3_IP3, MuonEta_HLT_BPMu3_IP3, MuonPhi_HLT_BPMu3_IP3, MuonPt_HLT_BPMu3_IP4,MuonEta_HLT_BPMu3_IP4,MuonPhi_HLT_BPMu3_IP4,MuonPt_HLT_BPMu3_IP5, MuonEta_HLT_BPMu3_IP5,MuonPhi_HLT_BPMu3_IP5,MuonPt_HLT_BPMu3_IP6,MuonEta_HLT_BPMu3_IP6,MuonPhi_HLT_BPMu3_IP6,MuonPt_HLT_BPMu12_IP6,MuonEta_HLT_BPMu12_IP6,MuonPhi_HLT_BPMu12_IP6;
+
+  std::vector<double>   Muon_innerTrack_highPurity,  Muon_innerTrack_ValidFraction, Muon_Numberofvalidtrackerhits, Muon_validMuonHitComb, Muon_IP2D_BS,  Muon_IP3D_BS,  Muon_IP2D_PV,  Muon_IP3D_PV, Muon_SoftMVA_Val;
+  std::vector<double>  DistXY_PVSV,  DistXY_significance_PVSV;
+  std::vector<double>     Triplet_IsoMu1, Triplet_IsoMu2,Triplet_IsoMu3;
+  std::vector<double>   FlightDistBS_SV,  FlightDistBS_SV_Err,  FlightDistBS_SV_Significance;
+
+  std::vector<double>    Mu1_IsGlobal,        Mu2_IsGlobal,        Mu3_IsGlobal,    Mu1_IsPF,  Mu2_IsPF,  Mu3_IsPF;
+
+
     //SyncTree
     /*  TTree*      SyncTree_;
      std::vector<float>  allmuons_pt, leadmuon_pt, leadmuon_phi, leadmuon_eta;
@@ -252,6 +273,10 @@ private:
         edm::InputTag algInputTag_;
         isMc = iConfig.getUntrackedParameter<bool>("isMcLabel");
 	isAna = iConfig.getUntrackedParameter<bool>("isAnaLabel");
+	is2016 = iConfig.getUntrackedParameter<bool>("is2016Label");
+        is2017= iConfig.getUntrackedParameter<bool>("is2017Label");
+	is2018= iConfig.getUntrackedParameter<bool>("is2018Label");
+	isBParking= iConfig.getUntrackedParameter<bool>("isBParkingLabel");
         muons_ = consumes<edm::View<pat::Muon> >  (iConfig.getParameter<edm::InputTag>("muonLabel"));
         vertex_ = consumes<edm::View<reco::Vertex> > (iConfig.getParameter<edm::InputTag>("VertexLabel"));
         trackToken_ = consumes<edm::View<reco::Track> > (edm::InputTag("generalTracks"));
@@ -265,6 +290,7 @@ private:
 	triggerObjects_ = consumes<std::vector<pat::TriggerObjectStandAlone> >(iConfig.getParameter<edm::InputTag>("objects"));
 	algToken_ = consumes<BXVector<GlobalAlgBlk>>(iConfig.getParameter<edm::InputTag>("AlgInputTag"));
 	gtUtil_ = new l1t::L1TGlobalUtil(iConfig, consumesCollector(), *this, algInputTag_, algInputTag_);
+	token_BeamSpot = consumes<reco::BeamSpot>(edm::InputTag("offlineBeamSpot"));
 
         //  _hltInputTag(iConfig.getParameter<edm::InputTag>("hltInputTag")),
         //tauToken_(consumes(iConfig.getParameter("taus"))),
@@ -287,7 +313,8 @@ private:
         return deltaR;
     }
 
-    float MiniAnaTau3Mu::dRtriggerMatch(pat::Muon m, trigger::TriggerObjectCollection triggerObjects) {
+float MiniAnaTau3Mu::dRtriggerMatch(pat::Muon m, vector<pat::TriggerObjectStandAlone> triggerObjects) {
+//float MiniAnaTau3Mu::dRtriggerMatch(pat::Muon m, trigger::TriggerObjectCollection triggerObjects) {
         float dRmin = 1.;                                                                          
         for (unsigned int i = 0 ; i < triggerObjects.size() ; i++) {
             float deltaR = sqrt( reco::deltaR2(triggerObjects[i].eta(), triggerObjects[i].phi(), m.eta(), m.phi()));
@@ -314,14 +341,14 @@ private:
     // from primary event vertex refit
 bool tracksMatchByDeltaR(const reco::Track* trk1, const reco::Track* trk2)
 {
-  cout<<" pv_t eta="<<trk1->eta()<<" sv_t eta="<<trk2->eta()<<" deltaR(tk1, tk2)="<<reco::deltaR(*trk1, *trk2)<<endl;
+  //cout<<" pv_t eta="<<trk1->eta()<<" sv_t eta="<<trk2->eta()<<" deltaR(tk1, tk2)="<<reco::deltaR(*trk1, *trk2)<<endl;
   if ( reco::deltaR(*trk1, *trk2) < 1.e-2 && trk1->charge() == trk2->charge() ) return true;
   else return false;
 }
 
 bool tracksMatchByDeltaR2(const reco::TransientTrack trk1, const reco::Track* trk2)
 {
-  cout<<" pv_t eta="<<trk1.track().eta()<<" sv_t eta="<<trk2->eta()<<" deltaR(tk1, tk2)="<<reco::deltaR(trk1.track(), *trk2)<<endl;
+  //cout<<" pv_t eta="<<trk1.track().eta()<<" sv_t eta="<<trk2->eta()<<" deltaR(tk1, tk2)="<<reco::deltaR(trk1.track(), *trk2)<<endl;
   if ( reco::deltaR(trk1.track(), *trk2) < 1.e-2 && trk1.track().charge() == trk2->charge() ) return true;
   else return false;
 }
@@ -390,6 +417,7 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
     
     
     
+    
     void
     MiniAnaTau3Mu::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     {
@@ -438,6 +466,25 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 
 	edm::Handle<std::vector<pat::PackedCandidate> > PFCands;
 	iEvent.getByToken(srcCands_,PFCands);
+
+
+	reco::BeamSpot beamSpot;
+	edm::Handle<reco::BeamSpot> beamSpotHandle;
+        iEvent.getByToken(token_BeamSpot, beamSpotHandle);
+        const reco::BeamSpot& beamspot = *beamSpotHandle.product();
+
+
+
+
+        if ( beamSpotHandle.isValid() )
+          {
+            beamSpot = *beamSpotHandle;
+
+	  } else
+          {
+	    edm::LogInfo("MyAnalyzer")
+              << "No beam spot available from EventSetup \n";
+          }
 
 
 	//edm::Handle<SimTrackContainer> simTracks;
@@ -492,45 +539,165 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 	      Trigger_hltdecision.push_back(triggerResults->accept(i_hlt ));
 	    }
 	}
-    
 
-
-
+	vector<pat::TriggerObjectStandAlone> TriggerObj_DsTau3Mu,  TriggerObj_DsTau3Mu2017; 
+	vector<pat::TriggerObjectStandAlone> MuonsObjects_BPMu7, MuonsObjects_BPMu12_IP6, MuonsObjects_BPMu8, MuonsObjects_BPMu8_IP6,MuonsObjects_BPMu8_IP5,MuonsObjects_BPMu9_IP0, MuonsObjects_BPMu9_IP3, MuonsObjects_BPMu9_IP4, MuonsObjects_BPMu9_IP5, MuonsObjects_BPMu9_IP6; 
+	
 	for (pat::TriggerObjectStandAlone obj : *triggerObjects) { // note: not "const &" since we want to call unpackPathNames
 	  obj.unpackPathNames(triggerNames);
-	  std::cout << "\tTrigger object:  pt " << obj.pt() << ", eta " << obj.eta() << ", phi " << obj.phi() << std::endl;
-	  // Print trigger object collection and type
-	  std::cout << "\t   Collection: " << obj.collection() << std::endl;
-	  std::cout << "\t   Type IDs:   ";
-	  for (unsigned h = 0; h < obj.filterIds().size(); ++h) std::cout << " " << obj.filterIds()[h] ;
-	  std::cout << std::endl;
-	  // Print associated trigger filters
-	  std::cout << "\t   Filters:    ";
-	  for (unsigned h = 0; h < obj.filterLabels().size(); ++h) std::cout << " " << obj.filterLabels()[h];
-	  std::cout << std::endl;
-	  std::vector pathNamesAll = obj.pathNames(false);
-	  std::vector pathNamesLast = obj.pathNames(true);
+	  //std::cout << "\tTrigger object:  pt " << obj.pt() << ", eta " << obj.eta() << ", phi " << obj.phi() << std::endl;
+	  //std::cout << "\t   Collection: " << obj.collection() << std::endl;
+	  //std::cout << "\t   Type IDs:   ";
+	  //for (unsigned h = 0; h < obj.filterIds().size(); ++h){ 	  
+	   //std::cout << " " << obj.filterIds()[h] ;  
+	  //std::cout << "\t   Filters:    ";
+
+	  for (unsigned h = 0; h < obj.filterLabels().size(); ++h) {
+	 
+	    if(obj.filterLabels()[h]=="hltdstau3muDisplaced3muFltr"){
+	      //  std::cout << " Filter: " << obj.filterLabels()[h]<<endl;
+	      TriggerObj_DsTau3Mu.push_back(obj);
+	    }
+	    if(obj.filterLabels()[h]=="hltTau3muTkVertexFilter"){
+              TriggerObj_DsTau3Mu2017.push_back(obj);
+            }
+	    if( isBParking){
+	    if(obj.filterLabels()[h]=="hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered8Q"){
+             MuonsObjects_BPMu8.push_back(obj);
+            }                          
+	    if(obj.filterLabels()[h]=="hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered7IP4Q"){
+              MuonsObjects_BPMu7.push_back(obj);
+            }
+	    if(obj.filterLabels()[h]=="hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered8IP6Q"){
+              MuonsObjects_BPMu8_IP6.push_back(obj);
+            }
+                         
+	    if(obj.filterLabels()[h]=="hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered8IP5Q"){
+              MuonsObjects_BPMu8_IP5.push_back(obj);
+            }
+
+	    if(obj.filterLabels()[h]=="hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered9IP0Q"){
+              MuonsObjects_BPMu9_IP0.push_back(obj);
+            }
+  	    if(obj.filterLabels()[h]=="hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered9IP3Q"){
+              MuonsObjects_BPMu9_IP3.push_back(obj);
+            }
+	    if(obj.filterLabels()[h]=="hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered9IP4Q"){
+              MuonsObjects_BPMu9_IP4.push_back(obj);
+            }
+	    if(obj.filterLabels()[h]=="hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered9IP5Q"){
+              MuonsObjects_BPMu9_IP5.push_back(obj);
+            }
+	    if(obj.filterLabels()[h]=="hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered9Q"){
+              MuonsObjects_BPMu9_IP6.push_back(obj);
+            }
+	    if(obj.filterLabels()[h]=="hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered12Q"){
+		MuonsObjects_BPMu12_IP6.push_back(obj);
+	    }
+	      } 
+	    //std::cout << "\tTrigger object:  pt " << obj.pt() << ", eta " << obj.eta() << ", phi " << obj.phi() << std::endl;
+	      std::vector pathNamesAll = obj.pathNames(false);
+	      std::vector pathNamesLast = obj.pathNames(true);
 	  // Print all trigger paths, for each one record also if the object is associated to a 'l3' filter (always true for the
 	  // definition used in the PAT trigger producer) and if it's associated to the last filter of a successfull path (which
 	  // means that this object did cause this trigger to succeed; however, it doesn't work on some multi-object triggers)
-	  std::cout << "\t   Paths (" << pathNamesAll.size()<<"/"<<pathNamesLast.size()<<"):    ";
-	  for (unsigned h = 0, n = pathNamesAll.size(); h < n; ++h) {
-            bool isBoth = obj.hasPathName( pathNamesAll[h], true, true );
-            bool isL3   = obj.hasPathName( pathNamesAll[h], false, true );
-            bool isLF   = obj.hasPathName( pathNamesAll[h], true, false );
-            bool isNone = obj.hasPathName( pathNamesAll[h], false, false );
-	    std::cout << "   " << pathNamesAll[h];
-            if (isBoth) std::cout << "(L,3)";
-            if (isL3 && !isBoth) std::cout << "(*,3)";
-            if (isLF && !isBoth) std::cout << "(L,*)";
-            if (isNone && !isBoth && !isL3 && !isLF) std::cout << "(*,*)";
+	  /*    std::cout << "\t   Paths (" << pathNamesAll.size()<<"/"<<pathNamesLast.size()<<"):    "<<endl;
+	      for (unsigned h = 0, n = pathNamesAll.size(); h < n; ++h) {
+		bool isBoth = obj.hasPathName( pathNamesAll[h], true, true );
+		bool isL3   = obj.hasPathName( pathNamesAll[h], false, true );
+		bool isLF   = obj.hasPathName( pathNamesAll[h], true, false );
+		bool isNone = obj.hasPathName( pathNamesAll[h], false, false );
+		std::cout << "   " << pathNamesAll[h];
+		if (isBoth) std::cout << "(L,3)";
+		if (isL3 && !isBoth) std::cout << "(*,3)";
+		if (isLF && !isBoth) std::cout << "(L,*)";
+		if (isNone && !isBoth && !isL3 && !isLF) std::cout << "(*,*)";
+	      }
+	      std::cout << std::endl;*/
 	  }
-	  std::cout << std::endl;
+	  
+	  //}
 	}
-	std::cout << std::endl;
+	//	cout<<"TriggerObj_DsTau3Mu.size()="<<TriggerObj_DsTau3Mu.size()<<endl;
+	for(uint t=0; t<TriggerObj_DsTau3Mu.size();t++){
+	  //cout<<" trig obj pt="<<TriggerObj_DsTau3Mu.at(t).pt()<<endl;
+	  MuonPt_HLT.push_back(TriggerObj_DsTau3Mu.at(t).pt());
+	  MuonEta_HLT.push_back(TriggerObj_DsTau3Mu.at(t).eta());
+	  MuonPhi_HLT.push_back(TriggerObj_DsTau3Mu.at(t).phi());
+	}
 
- 
-	///////////////Fill GenParticles///////////////
+	for(uint t=0; t<TriggerObj_DsTau3Mu2017.size();t++){
+	  MuonPt_HLT2017.push_back(TriggerObj_DsTau3Mu2017.at(t).pt());
+          MuonEta_HLT2017.push_back(TriggerObj_DsTau3Mu2017.at(t).eta());
+          MuonPhi_HLT2017.push_back(TriggerObj_DsTau3Mu2017.at(t).phi());
+	}
+
+	for(uint t=0; t<MuonsObjects_BPMu7.size();t++){
+	  MuonPt_HLT_BPMu7.push_back(MuonsObjects_BPMu7.at(t).pt());
+	  MuonEta_HLT_BPMu7.push_back(MuonsObjects_BPMu7.at(t).eta());
+	  MuonPhi_HLT_BPMu7.push_back(MuonsObjects_BPMu7.at(t).phi());
+	}
+
+
+	if( isBParking){
+	for(uint t=0; t<MuonsObjects_BPMu8.size();t++){
+	  MuonPt_HLT_BPMu8.push_back(MuonsObjects_BPMu8.at(t).pt());
+          MuonEta_HLT_BPMu8.push_back(MuonsObjects_BPMu8.at(t).eta());
+          MuonPhi_HLT_BPMu8.push_back(MuonsObjects_BPMu8.at(t).phi());
+	}
+
+	for(uint t=0; t<MuonsObjects_BPMu8_IP6.size();t++){
+	  MuonPt_HLT_BPMu8_IP6.push_back(MuonsObjects_BPMu8_IP6.at(t).pt());
+          MuonEta_HLT_BPMu8_IP6.push_back(MuonsObjects_BPMu8_IP6.at(t).eta());
+          MuonPhi_HLT_BPMu8_IP6.push_back(MuonsObjects_BPMu8_IP6.at(t).phi());
+	}
+
+	for(uint t=0; t<MuonsObjects_BPMu8_IP5.size();t++){
+	  MuonPt_HLT_BPMu8_IP5.push_back(MuonsObjects_BPMu8_IP5.at(t).pt());
+          MuonEta_HLT_BPMu8_IP5.push_back(MuonsObjects_BPMu8_IP5.at(t).eta());
+          MuonPhi_HLT_BPMu8_IP5.push_back(MuonsObjects_BPMu8_IP5.at(t).phi());
+	}
+
+	for(uint t=0; t<MuonsObjects_BPMu9_IP0.size();t++){
+	  MuonPt_HLT_BPMu9_IP0.push_back(MuonsObjects_BPMu9_IP0.at(t).pt());
+	  MuonEta_HLT_BPMu9_IP0.push_back(MuonsObjects_BPMu9_IP0.at(t).eta());
+	  MuonPhi_HLT_BPMu9_IP0.push_back(MuonsObjects_BPMu9_IP0.at(t).phi());
+	}
+
+	for(uint t=0; t< MuonsObjects_BPMu9_IP3.size();t++){
+	  MuonPt_HLT_BPMu3_IP3.push_back(MuonsObjects_BPMu9_IP3.at(t).pt());
+          MuonEta_HLT_BPMu3_IP3.push_back(MuonsObjects_BPMu9_IP3.at(t).eta());
+          MuonPhi_HLT_BPMu3_IP3.push_back(MuonsObjects_BPMu9_IP3.at(t).phi());
+	}
+
+	for(uint t=0; t< MuonsObjects_BPMu9_IP4.size();t++){
+	  MuonPt_HLT_BPMu3_IP4.push_back(MuonsObjects_BPMu9_IP4.at(t).pt());
+          MuonEta_HLT_BPMu3_IP4.push_back(MuonsObjects_BPMu9_IP4.at(t).eta());
+          MuonPhi_HLT_BPMu3_IP4.push_back(MuonsObjects_BPMu9_IP4.at(t).phi());
+	  
+	}
+
+	for(uint t=0; t< MuonsObjects_BPMu9_IP5.size();t++){
+	  MuonPt_HLT_BPMu3_IP5.push_back(MuonsObjects_BPMu9_IP5.at(t).pt());
+          MuonEta_HLT_BPMu3_IP5.push_back(MuonsObjects_BPMu9_IP5.at(t).eta());
+          MuonPhi_HLT_BPMu3_IP5.push_back(MuonsObjects_BPMu9_IP5.at(t).phi());
+	}
+
+	for(uint t=0; t< MuonsObjects_BPMu9_IP6.size();t++){
+	  MuonPt_HLT_BPMu3_IP6.push_back(MuonsObjects_BPMu9_IP6.at(t).pt());
+          MuonEta_HLT_BPMu3_IP6.push_back(MuonsObjects_BPMu9_IP6.at(t).eta());
+          MuonPhi_HLT_BPMu3_IP6.push_back(MuonsObjects_BPMu9_IP6.at(t).phi());
+
+	}
+
+	for(uint t=0; t< MuonsObjects_BPMu12_IP6.size();t++){
+	  MuonPt_HLT_BPMu12_IP6.push_back(MuonsObjects_BPMu12_IP6.at(t).pt());
+	  MuonEta_HLT_BPMu12_IP6.push_back(MuonsObjects_BPMu12_IP6.at(t).eta());
+	  MuonPhi_HLT_BPMu12_IP6.push_back(MuonsObjects_BPMu12_IP6.at(t).phi());
+        }
+	}
+
+	///////////////Fill () Genparticles ()///////////////
         if(isMc){
             uint j=0;
             uint ngenP=genParticles->size();
@@ -611,7 +778,7 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 	  int quality = cand->pvAssociationQuality();
 	  
 	  //	  if (quality != pat::PackedCandidate::UsedInFitTight)  continue;
-	  if (quality != pat::PackedCandidate::UsedInFitLoose)  continue;
+	  //	  if (quality != pat::PackedCandidate::UsedInFitLoose)  continue;
 	  // cout<<kk<<" vtx ref key="<<key<<" cand pt="<<cand->pt()<<" vtx x="<<cand->vertexRef()->x()<<endl;
 	  VtxIdV.push_back(key);
 	  SelectedCandIdx.push_back(kk);  
@@ -665,7 +832,7 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 	vector<vector<reco::TransientTrack>> transTracksAssoToVtx;
 
 	for(uint i=0; i<AssoCandToVtx.size();i++){  
-	  cout<<i<<" vertex ID="<<VtxIdV.at(i)<<" with trk ass. n="<<AssoCandToVtx.at(i).size()<<endl;
+	  //cout<<i<<" vertex ID="<<VtxIdV.at(i)<<" with trk ass. n="<<AssoCandToVtx.at(i).size()<<endl;
 	  std::auto_ptr<reco::TrackCollection> newTrackCollection = std::auto_ptr<reco::TrackCollection>(new TrackCollection);
 
 	  std::vector<reco::TransientTrack> transTracks;
@@ -688,15 +855,17 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 
 	
 
-
+	
         //Triplets  Loop
+	vector<int>Mu1C, Mu2C, Mu3C,TauMass;
+
         cout<<"Number Of Triplets="<<Cand3Mu->size()<<endl;
 	std::vector<int> NTripl;
 	if(isAna){
         TripletCollectionSize = Cand3Mu->size() ;
         int TripletIndex =-99; uint trIn=0;
         for(edm::View<reco::CompositeCandidate>::const_iterator TauIt=Cand3Mu->begin(); TauIt!=Cand3Mu->end(), trIn<Cand3Mu->size(); ++TauIt, ++trIn){
-	  cout<<"----------------"<<trIn<<"----------------"<<endl;
+	  //cout<<"----------------"<<trIn<<"----------------"<<endl;
 	  const Candidate * c1 = TauIt->daughter(0)->masterClone().get();
 	  const pat::Muon *mu1 = dynamic_cast<const pat::Muon *>(c1);
 	  
@@ -706,8 +875,8 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 	  const Candidate * c3 = TauIt->daughter(2)->masterClone().get();
 	  const pat::Muon *mu3 = dynamic_cast<const pat::Muon *>(c3);
 
-	  //	  cout<<"mu1 pt="<<mu1->pt()<<" m2="<<mu2->pt()<<" m3="<<mu3->pt()<<endl;
-
+	  //cout<<"mu1 pt="<<mu1->pt()<<" m2="<<mu2->pt()<<" m3="<<mu3->pt()<<endl;
+	  cout<<"----------------------mu1 isGlobal="<<mu1->isGlobalMuon()<<endl;
             TrackRef trk1, trk2, trk3;
             if (mu1->isGlobalMuon()) { trk1 = mu1->get<TrackRef,reco::CombinedMuonTag>();}
             else { trk1 = mu1->get<TrackRef>();}
@@ -730,7 +899,7 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
             SVTrackRef.push_back(TrackRef2);
             SVTrackRef.push_back(TrackRef3);
 
-	    cout<<" track ref vector= "<<SVTrackRef.size()<<endl;
+	    //cout<<" track ref vector= "<<SVTrackRef.size()<<endl;
 
 
             reco::Vertex TripletVtx = reco::Vertex(TauIt->vertex(), TauIt->vertexCovariance(), TauIt->vertexChi2(), TauIt->vertexNdof(), TauIt->numberOfDaughters() );
@@ -740,13 +909,14 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 	    uint selVtxId;
 	    ThreeCandidate.SetPtEtaPhiM(TauIt->pt(), TauIt->eta(), TauIt->phi(), TauIt->mass());
 
-
+	    if(VtxIdV.size()>0 && vertices->size()>0) {
 	    for(uint VtxIt =0;VtxIt<vertices->size();VtxIt++ ){
 	      for(uint k=0;k<VtxIdV.size();k++){
 		if(VtxIdV[k]==VtxIt){
-		  //cout<<"Vtx id="<<VtxIt<<" x="<<(*vertices)[VtxIt].x()<<endl;
+		  //		  cout<<"Vtx id="<<VtxIt<<" x="<<(*vertices)[VtxIt].x()<<endl;
 		  TVector3 Dv3D_reco(TripletVtx.x() - (*vertices)[VtxIt].x(), TripletVtx.y() - (*vertices)[VtxIt].y(), TripletVtx.z() - (*vertices)[VtxIt].z());
 		  double Cosdphi_3D = Dv3D_reco.Dot(ThreeCandidate.Vect())/(Dv3D_reco.Mag()*ThreeCandidate.Vect().Mag());
+		  //cout<<"cosDPhi3D="<<Cosdphi_3D<<endl;
 		  if(Cosdphi_3D>dphi_pv){
 		    dphi_pv = Cosdphi_3D;
 		    primaryvertex_index=VtxIt;
@@ -756,24 +926,20 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 	      }
 	    }
 
-	    //cout<<"Cosdphi_3D= "<<dphi_pv<<" selVtxId="<<selVtxId<<" primaryvertex_index="<<primaryvertex_index<<endl;
+
+	
+	    //	    cout<<"Cosdphi_3D= "<<dphi_pv<<" selVtxId="<<selVtxId<<" primaryvertex_index="<<primaryvertex_index<<endl;
 	    std::vector<reco::TransientTrack> pvTracks_original;
 	    TransientTrackMap pvTrackMap_refit;
 
 
-	    cout<<" trans trk coll before ref="<<transTracksAssoToVtx.at(selVtxId).size()<<endl;
-	    //for(uint t=0; t<transTracksAssoToVtx.at(selVtxId).size(); t++){
-	    //  cout<<"pv track eta="<<transTracksAssoToVtx.at(selVtxId).at(t).track().eta()<<endl;}
+	    //cout<<" trans trk coll before ref="<<transTracksAssoToVtx.at(selVtxId).size()<<endl;
+	    //	    for(uint t=0; t<transTracksAssoToVtx.at(selVtxId).size(); t++){
+	    //	      cout<<"pv track eta="<<transTracksAssoToVtx.at(selVtxId).at(t).track().eta()<<endl;}
 	    
-	    /*for ( reco::Vertex::trackRef_iterator pvTrack = (*vertices)[primaryvertex_index].tracks_begin(); pvTrack != (*vertices)[primaryvertex_index].tracks_end(); ++pvTrack ) {
-	      reco::TransientTrack pvTrack_transient =theTransientTrackBuilder_->build(pvTrack->get());
-	      pvTracks_original.push_back(pvTrack_transient);
-	      pvTrackMap_refit.insert(std::make_pair(pvTrack->get(), pvTrack_transient));
-	      }*/
+	
 
-	    //removeTracks2(transTracksAssoToVtx.at(selVtxId), SVTrackRef); 
-	    //cout<<" pv trk coll after ref="<<trackRefAssoToVtx.at(selVtxId).size()<<endl;
-	    
+
 	    removeTracks3(transTracksAssoToVtx.at(selVtxId),  SVTrackRef);
 	    //	    std::vector<reco::TransientTrack> pvTracks_refit;
 	    
@@ -782,235 +948,148 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 	    
 
 	    //cout<<" Closest PV index "<<primaryvertex_index<<" x="<<(*vertices)[primaryvertex_index].x()<<" y="<<(*vertices)[primaryvertex_index].y()<<" z="<<(*vertices)[primaryvertex_index].z()<<endl;
-	    cout<<"after refit pvTracks.size()="<<transTracksAssoToVtx.at(selVtxId).size()<<endl;
-	    //cout<<"after refit pvTracks.size()="<<pvTracks_refit.size()<<endl;
+	    //	    cout<<"after refit pvTracks.size()="<<transTracksAssoToVtx.at(selVtxId).size()<<endl;
 
-	    //RefittedPV_NTracks.push_back(pvTracks_refit.size());   
 	    RefittedPV_NTracks.push_back(transTracksAssoToVtx.at(selVtxId).size());   
 
 	    if(transTracksAssoToVtx.at(selVtxId).size() >1){
-	    //if(pvTracks_refit.size() >1){
+
 	      
 	      KalmanVertexFitter PV_fitter (true);
 	      TransientVertex PVertex = PV_fitter.vertex(transTracksAssoToVtx.at(selVtxId));
-	      //TransientVertex PVertex = PV_fitter.vertex(pvTracks_refit);
+
 		
 	      RefittedPV_isValid.push_back(PVertex.isValid());
                 
-	      cout<<"Valid Vtx1="<<PVertex.isValid()<<endl;
+	      //cout<<"Valid Vtx1="<<PVertex.isValid()<<endl;
 	      
-	      if(PVertex.isValid()){
+	      if(PVertex.isValid() &&  TauIt->vertexChi2() >0 ){
 
 		NTripl.push_back(1);
 		
 		TripletIndex=trIn;
 		
+		if((mu1->isGlobalMuon()) && (mu1->isPFMuon())) {
+		  Mu1C.push_back(1);
+		  if((mu2->isGlobalMuon()) && (mu2->isPFMuon())){
+		    Mu2C.push_back(1);
+		    if((mu3->isGlobalMuon()) && (mu3->isPFMuon())){
+		      Mu3C.push_back(1);
+		      if( (TauIt->mass()>1.62) &&  (TauIt->mass()<2.0) ){
+			TauMass.push_back(1);
+		      }
+		    }
+		  } 
+
+		}            
+
+		Mu1_Pt.push_back(mu1->pt());
+		Mu1_Eta.push_back(mu1->eta());
+		Mu1_Phi.push_back(mu1->phi());
+		Mu1_TripletIndex.push_back(TripletIndex);
             
-            Mu1_Pt.push_back(mu1->pt());
-            Mu1_Eta.push_back(mu1->eta());
-            Mu1_Phi.push_back(mu1->phi());
-            Mu1_TripletIndex.push_back(TripletIndex);
+		Mu2_Pt.push_back(mu2->pt());
+		Mu2_Eta.push_back(mu2->eta());
+		Mu2_Phi.push_back(mu2->phi());
+		Mu2_TripletIndex.push_back(TripletIndex);
             
-            Mu2_Pt.push_back(mu2->pt());
-            Mu2_Eta.push_back(mu2->eta());
-            Mu2_Phi.push_back(mu2->phi());
-            Mu2_TripletIndex.push_back(TripletIndex);
-            
-            Mu3_Pt.push_back(mu3->pt());
-            Mu3_Eta.push_back(mu3->eta());
-            Mu3_Phi.push_back(mu3->phi());
-            Mu3_TripletIndex.push_back(TripletIndex);
-            //cout<<"Reco mu1 pt="<<mu1->pt()<<" mu2 pt="<<mu2->pt()<<" mu3 pt="<<mu3->pt()<<endl;
+		Mu3_Pt.push_back(mu3->pt());
+		Mu3_Eta.push_back(mu3->eta());
+		Mu3_Phi.push_back(mu3->phi());
+		Mu3_TripletIndex.push_back(TripletIndex);
+
+
+
+		Mu1_IsGlobal.push_back(mu1->isGlobalMuon());
+		Mu2_IsGlobal.push_back(mu2->isGlobalMuon());
+		Mu3_IsGlobal.push_back(mu3->isGlobalMuon());
+		
+		Mu1_IsPF.push_back(mu1->isPFMuon());
+		Mu2_IsPF.push_back(mu2->isPFMuon());
+		Mu3_IsPF.push_back(mu3->isPFMuon());
+		//cout<<"Reco mu1 pt="<<mu1->pt()<<" mu2 pt="<<mu2->pt()<<" mu3 pt="<<mu3->pt()<<endl;
             
 
-            //TransientVertex TransientTripletVtx = reco::Vertex(TauIt->vertex(), TauIt->vertexCovariance(), TauIt->vertexChi2(), TauIt->vertexNdof(), TauIt->numberOfDaughters() );
+		//TransientVertex TransientTripletVtx = reco::Vertex(TauIt->vertex(), TauIt->vertexCovariance(), TauIt->vertexChi2(), TauIt->vertexNdof(), TauIt->numberOfDaughters() );
             //cout<<" number of muons in triplet="<<TauIt->numberOfDaughters()<<endl;
 
 
 	    ///////////////Check Trigger Matching///////////////
-	    /*
+	    
             float dR1 = 999., dR2 = 999., dR3 = 999.;
+	    float dR1_2017 = 999., dR2_2017 = 999., dR3_2017 = 999.;
 	    float dR1_Mu7=999.,dR2_Mu7 = 999., dR3_Mu7 = 999.;
 	    float dR1_Mu8=999.,dR2_Mu8 = 999., dR3_Mu8 = 999.;
 	    float dR1_Mu8_IP6=999., dR1_Mu12_IP6=999, dR1_Mu8_IP5=999.;
 	    float dR1_Mu9_IP0=999., dR1_Mu9_IP3=999.,  dR1_Mu9_IP4=999., dR1_Mu9_IP5=999., dR1_Mu9_IP6=999.;
-            //std::vector<trigger::TriggerObject> trgobjs = triggerSummary->getObjects();
-            trigger::TriggerObjectCollection MuonsObjects;
-            trigger::TriggerObjectCollection MuonsObjects_BPMu7, MuonsObjects_BPMu12_IP6;
-            trigger::TriggerObjectCollection MuonsObjects_BPMu8, MuonsObjects_BPMu8_IP6,MuonsObjects_BPMu8_IP5;
-	    trigger::TriggerObjectCollection MuonsObjects_BPMu9_IP0, MuonsObjects_BPMu9_IP3, MuonsObjects_BPMu9_IP4, MuonsObjects_BPMu9_IP5, MuonsObjects_BPMu9_IP6;
-            //edm::InputTag MuonFilterTag = edm::InputTag("hltTau3muTkVertexFilter", "", "HLT"); //2017
-	    edm::InputTag MuonFilterTag = edm::InputTag("hltdstau3muDisplaced3muFltr", "", "HLT"); //2018
-	    edm::InputTag MuonFilterTagBPHMu8 = edm::InputTag("hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered8Q", "", "HLT");
-	    edm::InputTag MuonFilterTagBPHMu7 = edm::InputTag("hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered7IP4Q", "", "HLT");
-
-	    edm::InputTag MuonFilterTagBPHMu8_IP6 = edm::InputTag("hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered8IP6Q", "", "HLT");
-	    edm::InputTag MuonFilterTagBPHMu8_IP5 = edm::InputTag("hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered8IP5Q", "", "HLT");
-
-	    edm::InputTag MuonFilterTagBPHMu9_IP0 = edm::InputTag("hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered9IP0Q", "", "HLT");
-	    edm::InputTag MuonFilterTagBPHMu9_IP3 = edm::InputTag("hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered9IP3Q", "", "HLT");
-	    edm::InputTag MuonFilterTagBPHMu9_IP4 = edm::InputTag("hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered9IP4Q", "", "HLT");
-	    edm::InputTag MuonFilterTagBPHMu9_IP5 = edm::InputTag("hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered9IP5Q", "", "HLT");
-	    edm::InputTag MuonFilterTagBPHMu9_IP6 = edm::InputTag("hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered9Q", "", "HLT");
-
-	    edm::InputTag MuonFilterTagBPHMu12_IP6 = edm::InputTag("hltL3fL1sMu22OrParkL1f0L2f10QL3Filtered12Q", "", "HLT");
 
 
+	    dR1_2017 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, TriggerObj_DsTau3Mu2017);
+            dR2_2017 = MiniAnaTau3Mu::dRtriggerMatch(*mu2, TriggerObj_DsTau3Mu2017);
+            dR3_2017 = MiniAnaTau3Mu::dRtriggerMatch(*mu3, TriggerObj_DsTau3Mu2017);
+            Mu1_dRtriggerMatch_2017.push_back(dR1_2017);                                                                                                 	 Mu2_dRtriggerMatch_2017.push_back(dR2_2017);     
+	    Mu3_dRtriggerMatch_2017.push_back(dR3_2017);
 
 
+	    dR1 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, TriggerObj_DsTau3Mu);
+	    dR2 = MiniAnaTau3Mu::dRtriggerMatch(*mu2, TriggerObj_DsTau3Mu);
+	    dR3 = MiniAnaTau3Mu::dRtriggerMatch(*mu3, TriggerObj_DsTau3Mu);
+	    //cout<<"Trigger Matching: dR1="<<dR1<<" dR2="<<dR2<<" dR3="<<dR3<<endl;
+	    Mu1_dRtriggerMatch.push_back(dR1);                                                                                                          	 Mu2_dRtriggerMatch.push_back(dR2);                                                                                                        	      Mu3_dRtriggerMatch.push_back(dR3);  
 
-            size_t MuonFilterIndex = (*triggerSummary).filterIndex(MuonFilterTag); //find the index corresponding to the event
-	    size_t MuonFilterIndex_BPHMu8 = (*triggerSummary).filterIndex(MuonFilterTagBPHMu8);
-	    size_t MuonFilterIndex_BPHMu7 = (*triggerSummary).filterIndex(MuonFilterTagBPHMu7);
+	    if( isBParking){
+	    dR1_Mu8 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu8); 
+	    dR2_Mu8 = MiniAnaTau3Mu::dRtriggerMatch(*mu2, MuonsObjects_BPMu8);                                                                      
+	    dR3_Mu8 = MiniAnaTau3Mu::dRtriggerMatch(*mu3, MuonsObjects_BPMu8);                                                                      
+	    Mu1_dRtriggerMatch_Mu8.push_back(dR1_Mu8);
+	    Mu2_dRtriggerMatch_Mu8.push_back(dR2_Mu8);                                                                                               
+	    Mu3_dRtriggerMatch_Mu8.push_back(dR3_Mu8);  
 
-	    size_t MuonFilterIndex_BPHMu8_IP5 = (*triggerSummary).filterIndex(MuonFilterTagBPHMu8_IP5);
-	    size_t MuonFilterIndex_BPHMu8_IP6 = (*triggerSummary).filterIndex(MuonFilterTagBPHMu8_IP6);
-
-	    size_t MuonFilterIndex_BPHMu9_IP0 = (*triggerSummary).filterIndex(MuonFilterTagBPHMu9_IP0);
-	    size_t MuonFilterIndex_BPHMu9_IP3 = (*triggerSummary).filterIndex(MuonFilterTagBPHMu9_IP3);
-	    size_t MuonFilterIndex_BPHMu9_IP4 = (*triggerSummary).filterIndex(MuonFilterTagBPHMu9_IP4);
-	    size_t MuonFilterIndex_BPHMu9_IP5 = (*triggerSummary).filterIndex(MuonFilterTagBPHMu9_IP5);
-	    size_t MuonFilterIndex_BPHMu9_IP6 = (*triggerSummary).filterIndex(MuonFilterTagBPHMu9_IP6);
-	    size_t MuonFilterIndex_BPHMu12_IP6 = (*triggerSummary).filterIndex(MuonFilterTagBPHMu12_IP6);
-
-
-
-            if(MuonFilterIndex < (*triggerSummary).sizeFilters()) { //check if the trigger object is present
-            //save the trigger objetcs corresponding to muon leg
-                const trigger::Keys &KEYS = (*triggerSummary).filterKeys(MuonFilterIndex);
-                for (unsigned int ipart = 0; ipart < KEYS.size(); ipart++) {
-                    trigger::TriggerObject foundObject = (trgobjs)[KEYS[ipart]];
-                    MuonsObjects.push_back(foundObject);
-                }
-                dR1 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects);
-                dR2 = MiniAnaTau3Mu::dRtriggerMatch(*mu2, MuonsObjects);
-                dR3 = MiniAnaTau3Mu::dRtriggerMatch(*mu3, MuonsObjects);
-            }
-            Mu1_dRtriggerMatch.push_back(dR1);
-            Mu2_dRtriggerMatch.push_back(dR2);
-            Mu3_dRtriggerMatch.push_back(dR3);
+	    dR1_Mu7 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu7);                                                                      
+	    dR2_Mu7 = MiniAnaTau3Mu::dRtriggerMatch(*mu2, MuonsObjects_BPMu7);                                                                      
+	    dR3_Mu7 = MiniAnaTau3Mu::dRtriggerMatch(*mu3, MuonsObjects_BPMu7);                                                                      
+	    
+	    Mu1_dRtriggerMatch_Mu7.push_back(dR1_Mu7);
+	    Mu2_dRtriggerMatch_Mu7.push_back(dR2_Mu7);
+	    Mu3_dRtriggerMatch_Mu7.push_back(dR3_Mu7);
 
 
-	    if(MuonFilterIndex_BPHMu8 < (*triggerSummary).sizeFilters()) { //check if the trigger object is present                                                              
-	      //save the trigger objetcs corresponding to muon leg                                                                                                          
-	      const trigger::Keys &KEYS = (*triggerSummary).filterKeys(MuonFilterIndex_BPHMu8);
-	      for (unsigned int ipart = 0; ipart < KEYS.size(); ipart++) {
-		trigger::TriggerObject foundObject = (trgobjs)[KEYS[ipart]];
-		MuonsObjects_BPMu8.push_back(foundObject);
-	      }
-	      dR1_Mu8 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu8);
-	      dR2_Mu8 = MiniAnaTau3Mu::dRtriggerMatch(*mu2, MuonsObjects_BPMu8);
-	      dR3_Mu8 = MiniAnaTau3Mu::dRtriggerMatch(*mu3, MuonsObjects_BPMu8);
-            }
-            Mu1_dRtriggerMatch_Mu8.push_back(dR1_Mu8);
-            Mu2_dRtriggerMatch_Mu8.push_back(dR2_Mu8);
-            Mu3_dRtriggerMatch_Mu8.push_back(dR3_Mu8);
-	     
-	    if(MuonFilterIndex_BPHMu7 < (*triggerSummary).sizeFilters()) {
-              const trigger::Keys &KEYS = (*triggerSummary).filterKeys(MuonFilterIndex_BPHMu7);
-              for (unsigned int ipart = 0; ipart < KEYS.size(); ipart++) {
-		trigger::TriggerObject foundObject = (trgobjs)[KEYS[ipart]];
-                MuonsObjects_BPMu7.push_back(foundObject);
-              }
-              dR1_Mu7 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu7);
-              dR2_Mu7 = MiniAnaTau3Mu::dRtriggerMatch(*mu2, MuonsObjects_BPMu7);
-              dR3_Mu7 = MiniAnaTau3Mu::dRtriggerMatch(*mu3, MuonsObjects_BPMu7);
-            }
-            Mu1_dRtriggerMatch_Mu7.push_back(dR1_Mu7);           
-            Mu2_dRtriggerMatch_Mu7.push_back(dR2_Mu7);
-            Mu3_dRtriggerMatch_Mu7.push_back(dR3_Mu7);
+	    dR1_Mu8_IP5 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu8_IP5);                                                              
+
+            Mu1_dRtriggerMatch_Mu8_IP5.push_back(dR1_Mu8_IP5);     
+
+	    dR1_Mu8_IP6 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu8_IP6);                                                              
+                                                                                                                                    
+            Mu1_dRtriggerMatch_Mu8_IP6.push_back(dR1_Mu8_IP6);       
+
+	    dR1_Mu9_IP0 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu9_IP0);                                                              
+                                                                                                                                  
+            Mu1_dRtriggerMatch_Mu9_IP0.push_back(dR1_Mu9_IP0);        
+
+	    dR1_Mu9_IP3 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu9_IP3);                                                              
+                                                                                                                                       
+            Mu1_dRtriggerMatch_Mu9_IP3.push_back(dR1_Mu9_IP3);  
+
+	    dR1_Mu9_IP4 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu9_IP4);                                                              
+                                                                                                                                     
+            Mu1_dRtriggerMatch_Mu9_IP4.push_back(dR1_Mu9_IP4);   
+
+	    dR1_Mu9_IP5 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu9_IP5);                                                              
+                                                                                                                                       
+            Mu1_dRtriggerMatch_Mu9_IP5.push_back(dR1_Mu9_IP5);          
+
+                                                                                                                                     
+	    dR1_Mu9_IP6 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu9_IP6);                                                              
+                                                                                                                                  
+            Mu1_dRtriggerMatch_Mu9_IP6.push_back(dR1_Mu9_IP6);     
+
+	    dR1_Mu12_IP6 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu12_IP6);                                                            
+                                                                                                                                      
+            Mu1_dRtriggerMatch_Mu12_IP6.push_back(dR1_Mu12_IP6);                    
 
 
-	    if(MuonFilterIndex_BPHMu8_IP5 < (*triggerSummary).sizeFilters()) {
-              const trigger::Keys &KEYS = (*triggerSummary).filterKeys(MuonFilterIndex_BPHMu8_IP5);
-              for (unsigned int ipart = 0; ipart < KEYS.size(); ipart++) {
-		trigger::TriggerObject foundObject = (trgobjs)[KEYS[ipart]];
-                MuonsObjects_BPMu8_IP5.push_back(foundObject);
-              }
-              dR1_Mu8_IP5 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu8_IP5);
-            }
-            Mu1_dRtriggerMatch_Mu8_IP5.push_back(dR1_Mu8_IP5);
-
-
-
-	    if(MuonFilterIndex_BPHMu8_IP6 < (*triggerSummary).sizeFilters()) {
-              const trigger::Keys &KEYS = (*triggerSummary).filterKeys(MuonFilterIndex_BPHMu8_IP6);
-              for (unsigned int ipart = 0; ipart < KEYS.size(); ipart++) {
-		trigger::TriggerObject foundObject = (trgobjs)[KEYS[ipart]];
-                MuonsObjects_BPMu8_IP6.push_back(foundObject);
-              }
-              dR1_Mu8_IP6 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu8_IP6);
-            }
-            Mu1_dRtriggerMatch_Mu8_IP6.push_back(dR1_Mu8_IP6);
-
-
-	    if(MuonFilterIndex_BPHMu9_IP0 < (*triggerSummary).sizeFilters()) {
-              const trigger::Keys &KEYS = (*triggerSummary).filterKeys(MuonFilterIndex_BPHMu9_IP0);
-              for (unsigned int ipart = 0; ipart < KEYS.size(); ipart++) {
-		trigger::TriggerObject foundObject = (trgobjs)[KEYS[ipart]];
-		MuonsObjects_BPMu9_IP0.push_back(foundObject);
-              }
-              dR1_Mu9_IP0 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu9_IP0);
-            }
-            Mu1_dRtriggerMatch_Mu9_IP0.push_back(dR1_Mu9_IP0);
-
-
-	    if(MuonFilterIndex_BPHMu9_IP3 < (*triggerSummary).sizeFilters()) {
-              const trigger::Keys &KEYS = (*triggerSummary).filterKeys(MuonFilterIndex_BPHMu9_IP3);
-              for (unsigned int ipart = 0; ipart < KEYS.size(); ipart++) {
-		trigger::TriggerObject foundObject = (trgobjs)[KEYS[ipart]];
-		MuonsObjects_BPMu9_IP3.push_back(foundObject);
-              }
-              dR1_Mu9_IP3 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu9_IP3);
-            }
-            Mu1_dRtriggerMatch_Mu9_IP3.push_back(dR1_Mu9_IP3);
-
-	    if(MuonFilterIndex_BPHMu9_IP4 < (*triggerSummary).sizeFilters()) {
-              const trigger::Keys &KEYS = (*triggerSummary).filterKeys(MuonFilterIndex_BPHMu9_IP4);
-              for (unsigned int ipart = 0; ipart < KEYS.size(); ipart++) {
-		trigger::TriggerObject foundObject = (trgobjs)[KEYS[ipart]];
-		MuonsObjects_BPMu9_IP4.push_back(foundObject);
-              }
-              dR1_Mu9_IP4 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu9_IP4);
-            }
-            Mu1_dRtriggerMatch_Mu9_IP4.push_back(dR1_Mu9_IP4);
-
-
-	    if(MuonFilterIndex_BPHMu9_IP5 < (*triggerSummary).sizeFilters()) {
-              const trigger::Keys &KEYS = (*triggerSummary).filterKeys(MuonFilterIndex_BPHMu9_IP5);
-              for (unsigned int ipart = 0; ipart < KEYS.size(); ipart++) {
-		trigger::TriggerObject foundObject = (trgobjs)[KEYS[ipart]];
-		MuonsObjects_BPMu9_IP5.push_back(foundObject);
-              }
-              dR1_Mu9_IP5 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu9_IP5);
-            }
-            Mu1_dRtriggerMatch_Mu9_IP5.push_back(dR1_Mu9_IP5);
-
-
-	    if(MuonFilterIndex_BPHMu9_IP6 < (*triggerSummary).sizeFilters()) {
-              const trigger::Keys &KEYS = (*triggerSummary).filterKeys(MuonFilterIndex_BPHMu9_IP6);
-              for (unsigned int ipart = 0; ipart < KEYS.size(); ipart++) {
-		trigger::TriggerObject foundObject = (trgobjs)[KEYS[ipart]];
-                MuonsObjects_BPMu9_IP6.push_back(foundObject);
-              }
-              dR1_Mu9_IP6 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu9_IP6);
-            }
-            Mu1_dRtriggerMatch_Mu9_IP6.push_back(dR1_Mu9_IP6);
-
-
-	    if(MuonFilterIndex_BPHMu12_IP6 < (*triggerSummary).sizeFilters()) {
-              const trigger::Keys &KEYS = (*triggerSummary).filterKeys(MuonFilterIndex_BPHMu12_IP6);
-              for (unsigned int ipart = 0; ipart < KEYS.size(); ipart++) {
-		trigger::TriggerObject foundObject = (trgobjs)[KEYS[ipart]];
-                MuonsObjects_BPMu12_IP6.push_back(foundObject);
-              }
-              dR1_Mu12_IP6 = MiniAnaTau3Mu::dRtriggerMatch(*mu1, MuonsObjects_BPMu12_IP6);
-            }
-            Mu1_dRtriggerMatch_Mu12_IP6.push_back(dR1_Mu12_IP6);
-	    */
-
-
-            if(isMc){
+	    }
+	    if(isMc){
                 bool isMatch1=false; bool isMatch2=false; bool isMatch3=false;
                 if( (mu1->simType() == reco::MatchedMuonFromHeavyFlavour) && (fabs(mu1->simMotherPdgId()) == 15) ){
                     isMatch1=true;
@@ -1081,37 +1160,24 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 
 
 	    /////////////PV Refit//////////////////////////////
-	    //cout<<" pvTrackMap_refit size "<<pvTrackMap_refit.size()<<endl;
-
-            /*for(uint i=0; i<pvTracks_refit.size(); i++){
-             TrackRef tr = TrackRef(pvTracks_refit, i);
-             //reco::Track pvTr=pvTracks_refit.at(i).track();
-             //TrackRef pvTrRef = pvTr.get<TrackRef>();
-             cout<<i<<"PV track ID="<<tr.id()<<endl;
-             }*/
-	    /////////////PV Refit//////////////////////////////
 
             //Defining ISO VAR related to the triplet
-            math::XYZPoint SVertexPoint = math::XYZPoint(TripletVtx.x(), TripletVtx.y(), TripletVtx.z());
+            
             TLorentzVector LV1=TLorentzVector( mu1->px(), mu1->py(), mu1->pz(), mu1->energy() );
             TLorentzVector LV2=TLorentzVector( mu2->px(), mu2->py(), mu2->pz(), mu2->energy() );
             TLorentzVector LV3=TLorentzVector( mu3->px(), mu3->py(), mu3->pz(), mu3->energy() );
             TLorentzVector LVTau = LV1 + LV2 + LV3;
 
 
-	    //            edm::View<reco::Track>::const_iterator trIt  = trackCollection->begin();
-	    //            edm::View<reco::Track>::const_iterator trEnd = trackCollection->end();
-
             int nTracks03_mu1=0, nTracks03_mu2=0, nTracks03_mu3=0;
             double mindist=9999;
             double sumPtTrack1=0, sumPtTrack2=0, sumPtTrack3=0, maxSumPtTracks=0;
 
+	    
+	    math::XYZPoint SVertexPoint = math::XYZPoint(TripletVtx.x(), TripletVtx.y(), TripletVtx.z());
 	    for (std::vector<pat::PackedCandidate>::const_iterator cand = PFCands->begin(); cand != PFCands->end();++cand) {
 
-	      //for (; trIt != trEnd; ++trIt) {
-	      //const reco::Track track = (*trIt);
-
-	      if(  (cand->pt()) && (fabs(cand->eta())<2.4) && (cand->trackerLayersWithMeasurement()>5) && (cand->pixelLayersWithMeasurement()>1)  ){
+	      if(  (cand->pt()>1) && (fabs(cand->eta())<2.4) && (cand->trackerLayersWithMeasurement()>5) && (cand->pixelLayersWithMeasurement()>1)  ){
 		double dR1 = reco::deltaR2(Track1.eta(), cand->eta(), Track1.phi(), cand->phi() );
 		double dR2 = reco::deltaR2(Track2.eta(), cand->eta(), Track2.phi(), cand->phi() );
 		double dR3 = reco::deltaR2(Track3.eta(), cand->eta(), Track3.phi(), cand->phi() );
@@ -1124,12 +1190,13 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
                   if(dca_fv<mindist && dca_fv>0) { 
 		    
 		    mindist = dca_fv;
-		    cout<<" MinDist="<<dca_fv<<endl; 
+		    //cout<<" MinDist="<<dca_fv<<endl; 
 		  }
 		  
                   //for eack track having pt>1, excluded the muon tracks,
                   //for each muon in the triplet, if deltaR<0.3 and the DCA is smaller than 1 mm
                   //the pt of the track is added -> I will take the largest total pt from the three muons
+		  
                   if (dca_fv < 0.1) {
                      if (dR1<0.3) {
                         sumPtTrack1+=cand->pt();
@@ -1144,39 +1211,66 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
                         nTracks03_mu3++;
                      }
                   }
-               }
+		  
+	      }
             }
             Triplet_mindca_iso.push_back(mindist);
             maxSumPtTracks = std::max(sumPtTrack1, std::max(sumPtTrack2,sumPtTrack3));
-	    cout<<TripletIndex<<" TauMass "<<TauIt->mass()<<" SumPt Tracks in cone="<<maxSumPtTracks<<" TauPt="<<TauIt->pt()<<endl;
+	    //cout<<TripletIndex<<" TauMass "<<TauIt->mass()<<" SumPt Tracks in cone="<<maxSumPtTracks<<" TauPt="<<TauIt->pt()<<endl;
             double relativeiso = maxSumPtTracks/LVTau.Pt();
             Triplet_relativeiso.push_back(relativeiso);
             
             Mu1_NTracks03iso.push_back(nTracks03_mu1);
             Mu2_NTracks03iso.push_back(nTracks03_mu2);
             Mu3_NTracks03iso.push_back(nTracks03_mu3);
- 
+
+	    double sumPtTrackRel1=0, sumPtTrackRel2=0, sumPtTrackRel3=0, maxSumPtRelTracks =0;
+            sumPtTrackRel1=sumPtTrack1/LV1.Pt();
+            sumPtTrackRel2=sumPtTrack2/LV2.Pt();
+            sumPtTrackRel3=sumPtTrack3/LV3.Pt();
+            maxSumPtRelTracks = std::max(sumPtTrackRel1, std::max(sumPtTrackRel2,sumPtTrackRel3));
+            Triplet_relativeiso2.push_back(maxSumPtRelTracks);
+	    Triplet_IsoMu1.push_back(sumPtTrack1);
+            Triplet_IsoMu2.push_back(sumPtTrack2);
+            Triplet_IsoMu3.push_back(sumPtTrack3);
+	    
+
 	    //cout<<"Valid Vtx2="<<PVertex.isValid()<<endl;
 	    //CachingVertex<5> fittedVertex = vertexFitter.vertex(tracksToVertex);
 	    GlobalPoint PVertexPos  (PVertex.position());
 	    GlobalPoint SVertexPos  (TripletVtx.x(), TripletVtx.y(), TripletVtx.z());
-	    //cout<<" PV Coord after refit="<<PVertexPos.x()<<" y="<<PVertexPos.y()<<" z="<<PVertexPos.z()<<endl;
+	    cout<<" PV Coord after refit="<<PVertexPos.x()<<" y="<<PVertexPos.y()<<" z="<<PVertexPos.z()<<endl;
 	    double FlightDist = TMath::Sqrt( pow(( PVertexPos.x() -SVertexPos.x()),2)+ pow(( PVertexPos.y() -SVertexPos.y()),2) + pow(( PVertexPos.z() -SVertexPos.z()),2));
+
+
                     
 	    VertexDistance3D vertTool;
 	    VertexState PVstate(PVertex.position(),PVertex.positionError());
+	    //cout<<"PV position="<<PVertex.position()<<endl;
+	    //cout<<"error xx="<<PVertex.positionError().cxx()<<" yx="<<PVertex.positionError().cyx()<<" yy="<<PVertex.positionError().cyy()<<endl;
+
+
+            //cout<<"SV position="<<TripletVtx.position()<<endl;
+            //cout<<"error xx="<<TripletVtx.error()<<endl;
+	    //cout<<" error invert="<<TripletVtx.error().Invert()<<endl;
+
 	    //VertexState SVstate(SVertexPos,TripletVtx.position());
 	    double distance = vertTool.distance(PVstate, TripletVtx).value();
+            //cout<<"distance="<< distance <<endl;
 	    double dist_err = vertTool.distance(PVstate, TripletVtx).error();
+            //cout<<"err="<<dist_err <<endl;
 	    double dist_sign =vertTool.distance(PVstate, TripletVtx).significance();
-	    double chi2 = vertTool.compatibility(PVstate, TripletVtx);
-                    
-	    //VertexDistance3D dist;
-	    //double fv_d3D = dist.distance(Vertex(fv), pvv).value(); // = dv_reco.Mag() ??
-	    //double fv_d3Dsig = dist.distance(Vertex(fv), pvv).significance();
-	    //double fv_ppdl3D = fv_d3D*fv_cosdphi3D*m3mu_reco/vtau.P();
+            //cout<<"signif="    <<dist_sign<<" sig2"<<distance/dist_err<<endl;
 
-                    ////
+	    //double chi2 = vertTool.compatibility(PVstate, TripletVtx);
+	    //cout<<"chi2 = "<<chi2 <<endl;
+	    VertexDistanceXY vdistXY;
+	    Measurement1D distXY = vdistXY.distance(TripletVtx, PVertex);
+
+	    // cout<<"the displacement="<<distXY.value()<<" signif="<<distXY.significance()<<endl;	    
+	    DistXY_PVSV.push_back(distXY.value());
+	    DistXY_significance_PVSV.push_back(distXY.significance());
+
 	    
 	    PV_x.push_back( (*vertices)[primaryvertex_index].x());
 	    PV_y.push_back( (*vertices)[primaryvertex_index].y());
@@ -1190,10 +1284,21 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 	    //RefittedPV_NTracks.push_back(pvTracks_refit.size());
 	    //RefittedPV_Chi2.push_back(PVertex.);
             
+	    VertexState BSstate(beamSpot);
+	    VertexDistanceXY vertTool2D;
+	    double BSdistance2D = vertTool2D.distance(BSstate, TripletVtx).value();
+	    double BSdist_err2D = vertTool2D.distance(BSstate, TripletVtx).error();
+	    double BSdist_sign2D =vertTool2D.distance(BSstate, TripletVtx).significance();
+
 	    FlightDistPVSV.push_back(distance);
 	    FlightDistPVSV_Err.push_back(dist_err);
 	    FlightDistPVSV_Significance.push_back(dist_sign);
-	    FlightDistPVSV_chi2.push_back(chi2);
+	    //FlightDistPVSV_chi2.push_back(chi2);
+
+
+	    FlightDistBS_SV.push_back(BSdistance2D);
+	    FlightDistBS_SV_Err.push_back(BSdist_err2D);
+	    FlightDistBS_SV_Significance.push_back(BSdist_sign2D);
 	    
 		    //Add dxy info
 	    GlobalVector dir1(mu1->px(), mu1->py(),  mu1->pz()); //To compute sign of IP
@@ -1288,6 +1393,10 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
                   Mu1_dRtriggerMatch_Mu12_IP6.push_back(-99);
 
 
+		  Mu1_dRtriggerMatch_2017.push_back(-99);
+		    Mu2_dRtriggerMatch_2017.push_back(-99);
+		    Mu3_dRtriggerMatch_2017.push_back(-99);
+
                     FlightDistPVSV.push_back(-99);
                     FlightDistPVSV_Err.push_back(-99);
                     FlightDistPVSV_Significance.push_back(-99);
@@ -1323,19 +1432,46 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
                     GenMatchMu1_Phi.push_back(-99);
                     GenMatchMu2_Phi.push_back(-99);
                     GenMatchMu3_Phi.push_back(-99);
+		    Triplet_relativeiso2.push_back(-99);
 
+		    DistXY_PVSV.push_back(-99);
+		    DistXY_significance_PVSV.push_back(-99);
+		    Triplet_IsoMu1.push_back(-99);
+                    Triplet_IsoMu2.push_back(-99);
+                    Triplet_IsoMu3.push_back(-99);
+
+		    FlightDistBS_SV.push_back(-99);
+                    FlightDistBS_SV_Err.push_back(-99);
+                    FlightDistBS_SV_Significance.push_back(-99);
+
+
+		    Mu1_IsGlobal.push_back(-99);
+		    Mu2_IsGlobal.push_back(-99);
+		    Mu3_IsGlobal.push_back(-99);
+		    
+		    Mu1_IsPF.push_back(-99);
+		    Mu2_IsPF.push_back(-99);
+		    Mu3_IsPF.push_back(-99);
 
   
-                }
+	      }
                 
             }
+	    }
             
         }
 	}
+
         NGoodTriplets.push_back(NTripl.size());
 	if(NTripl.size()>0) hEventsAfterGoodCand->Fill(1);
+	if(Mu1C.size()>0) hEventsAfterMu1ID->Fill(1);
+	if(Mu2C.size()>0)  hEventsAfterMu2ID->Fill(1);
+	if(Mu3C.size()>0)  hEventsAfterMu3ID->Fill(1);
+	if(TauMass.size()>0)  hEventsAfterTauMass->Fill(1);
+
+
 	//    cout<<"***Number of Muons="<<muons->size()<<endl; uint k=0;
-        
+       
         
         std::vector<int> MuFilter;
         vector<pat::Muon>    MyMu, MyMu2, SyncMu;
@@ -1343,19 +1479,6 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
         MuonCollectionSize = muons->size();
 	uint k=0;        
         for(edm::View<pat::Muon>::const_iterator mu=muons->begin(); mu!=muons->end(), k<muons->size(); ++mu, ++k){
-            
-            /*
-
-             if (!(mu->track()->quality(reco::TrackBase::highPurity))) continue;
-             if ((!(mu->track()->hitPattern().numberOfValidPixelHits()>0))  ) continue;
-            
-             */
-            
-            
-            //mu.muonBestTrack()->dz(PV.position()), mu.isTightMuon(PV));
-            //std::cout<<"RecoMu pt="<<mu->pt()<<" eta="<<mu->eta()<<" phi="<<mu->phi()<<" segm compatibility="<<mu->segmentCompatibility()<<" trkRelChi2="<<mu->combinedQuality().trkRelChi2<<"  vz="<<mu->vz()<<" mu charge="<<mu->charge()<<" mu ECAL energy="<<mu->calEnergy().em<<std::endl;
-            //" SymType="<<mu->simExtType()<<" SimPt="<<mu->simPt()<<
-            //cout<<" pixel hits="<<mu->track()->hitPattern().numberOfValidPixelHits()<<" pt="<<mu->track()->pt()<<" mu ECAL energy="<<mu->calEnergy().em<<" mu.vx="<<mu->vx()<<endl;
             
             
             MuFilter.push_back(1);
@@ -1379,7 +1502,10 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
             Muon_vx.push_back(mu->vx());
             Muon_vy.push_back(mu->vy());
             Muon_vz.push_back(mu->vz());
-            
+	    Muon_IP2D_BS.push_back(pat::Muon::BS2D);
+            Muon_IP3D_BS.push_back(pat::Muon::BS3D);
+            Muon_IP2D_PV.push_back(pat::Muon::PV2D);
+            Muon_IP3D_PV.push_back(pat::Muon::PV3D);
             //cout<<" Muon mother: "<<mu->simMotherPdgId()<<endl;
             
             //MuonID
@@ -1397,9 +1523,53 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
             Muon_isIsolationValid.push_back(mu->isIsolationValid());
             Muon_numberOfMatchedStations.push_back(mu->numberOfMatchedStations());
             Muon_numberOfMatches.push_back(mu->numberOfMatches(reco::Muon::SegmentArbitration));
+	    Muon_SoftMVA_Val.push_back(mu->softMvaValue());
             
             Muon_timeAtIpInOut.push_back(mu->time().timeAtIpInOut);
             Muon_timeAtIpInOutErr.push_back(mu->time().timeAtIpInOutErr);
+
+
+	    std::vector<int> fvDThits{0, 0, 0, 0};
+	    std::vector<int> fvRPChits{0, 0, 0, 0};
+	    std::vector<int> fvCSChits{0, 0, 0, 0};
+
+            float kVMuonHitComb = 0;
+            if (mu->isGlobalMuon()) {
+	      reco::TrackRef gTrack = mu->globalTrack();
+	      const reco::HitPattern& gMpattern = gTrack->hitPattern();
+	      for (int i = 0; i < gMpattern.numberOfAllHits(reco::HitPattern::TRACK_HITS); i++) {
+		uint32_t hit = gMpattern.getHitPattern(reco::HitPattern::TRACK_HITS, i);
+		if (!gMpattern.validHitFilter(hit))
+		  continue;
+
+		int muStation0 = gMpattern.getMuonStation(hit) - 1;
+		if (muStation0 >= 0 && muStation0 < 4) {
+		  if (gMpattern.muonDTHitFilter(hit))
+		    fvDThits[muStation0]++;
+		  if (gMpattern.muonRPCHitFilter(hit))
+		    fvRPChits[muStation0]++;
+		  if (gMpattern.muonCSCHitFilter(hit))
+		    fvCSChits[muStation0]++;
+		}
+	      }
+
+	      for (unsigned int station = 0; station < 4; ++station) {
+		kVMuonHitComb += (fvDThits[station]) / 2.;
+		kVMuonHitComb += fvRPChits[station];
+
+		if (fvCSChits[station] > 6) {
+		  kVMuonHitComb += 6;
+		} else {
+		  kVMuonHitComb += fvCSChits[station];
+		}
+	      }
+	      Muon_validMuonHitComb.push_back(kVMuonHitComb);
+            }else{
+              Muon_validMuonHitComb.push_back(-99);
+            }
+
+
+
             
             if (mu->isGlobalMuon()) {
                 Muon_GLnormChi2.push_back(mu->globalTrack()->normalizedChi2());
@@ -1412,13 +1582,23 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
             
             if (mu->innerTrack().isNonnull()){
                 Muon_trackerLayersWithMeasurement.push_back(mu->innerTrack()->hitPattern().trackerLayersWithMeasurement());
+		bool ishighq = mu->innerTrack()->quality(reco::Track::highPurity);
+                Muon_innerTrack_highPurity.push_back(ishighq);
                 Muon_Numberofvalidpixelhits.push_back(mu->innerTrack()->hitPattern().numberOfValidPixelHits());
+		Muon_innerTrack_ValidFraction.push_back( mu->innerTrack()->validFraction() );
+		Muon_Numberofvalidpixelhits.push_back(mu->innerTrack()->hitPattern().numberOfValidPixelHits());
+                Muon_Numberofvalidtrackerhits.push_back(mu->innerTrack()->hitPattern().numberOfValidTrackerHits());
                 Muon_innerTrack_p.push_back(mu->innerTrack()->p());
                 Muon_innerTrack_eta.push_back(mu->innerTrack()->eta());
                 Muon_innerTrack_phi.push_back(mu->innerTrack()->phi());
                 Muon_innerTrack_normalizedChi2.push_back(mu->innerTrack()->normalizedChi2());
             }else
             {
+	      Muon_innerTrack_ValidFraction.push_back( -99);
+	      Muon_innerTrack_highPurity.push_back( -99);
+	      Muon_trackerLayersWithMeasurement.push_back(-999);
+	      Muon_Numberofvalidpixelhits.push_back(-999);
+	      Muon_Numberofvalidtrackerhits.push_back(-999);
                 Muon_trackerLayersWithMeasurement.push_back(-999);
                 Muon_Numberofvalidpixelhits.push_back(-999);
                 Muon_innerTrack_p.push_back(-999);
@@ -1653,7 +1833,7 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
         Muon_isIsolationValid.clear();
         Muon_numberOfMatchedStations.clear();
         Muon_numberOfMatches.clear();
-        
+        Muon_SoftMVA_Val.clear();
         //MuonTime
         Muon_timeAtIpInOut.clear();
         Muon_timeAtIpInOutErr.clear();
@@ -1664,7 +1844,17 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
         
         Muon_trackerLayersWithMeasurement.clear();
         Muon_Numberofvalidpixelhits.clear();
-        
+ 
+
+	Muon_innerTrack_highPurity.clear();
+	Muon_innerTrack_ValidFraction.clear();
+	Muon_Numberofvalidtrackerhits.clear();
+	Muon_validMuonHitComb.clear();
+	Muon_IP2D_BS.clear();
+	Muon_IP3D_BS.clear();
+	Muon_IP2D_PV.clear();
+	Muon_IP3D_PV.clear();
+
         Muon_outerTrack_p.clear();
         Muon_outerTrack_eta.clear();
         Muon_outerTrack_phi.clear();
@@ -1768,6 +1958,10 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 	Mu2_dRtriggerMatch_Mu7.clear();
 	Mu3_dRtriggerMatch_Mu8.clear();
 
+	Mu1_dRtriggerMatch_2017.clear();
+	Mu2_dRtriggerMatch_2017.clear();
+	Mu3_dRtriggerMatch_2017.clear();
+
         
         Mu1_TripletIndex.clear();
         Mu2_TripletIndex.clear();
@@ -1850,9 +2044,59 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 
 	Trigger_hltname.clear();
 	Trigger_hltdecision.clear();
-	NGoodTriplets.clear();}
+	NGoodTriplets.clear();
+	Triplet_relativeiso2.clear();
 
-    
+        MuonPt_HLT.clear();
+        MuonEta_HLT.clear();
+        MuonPhi_HLT.clear();
+
+	MuonPt_HLT2017.clear();
+	MuonEta_HLT2017.clear();
+	    MuonPhi_HLT2017.clear();
+	    MuonPt_HLT_BPMu7.clear();
+	    MuonEta_HLT_BPMu7.clear();
+	    MuonPhi_HLT_BPMu7.clear();
+	    MuonPt_HLT_BPMu8.clear();
+	    MuonEta_HLT_BPMu8.clear();
+	    MuonPhi_HLT_BPMu8.clear();
+	    MuonPt_HLT_BPMu8_IP6.clear();
+	    MuonEta_HLT_BPMu8_IP6.clear();
+	    MuonPhi_HLT_BPMu8_IP6.clear();
+	    MuonPt_HLT_BPMu8_IP5.clear();
+	    MuonEta_HLT_BPMu8_IP5.clear();
+	    MuonPhi_HLT_BPMu8_IP5.clear();
+	    MuonPt_HLT_BPMu9_IP0.clear();
+	    MuonEta_HLT_BPMu9_IP0.clear();
+	    MuonPhi_HLT_BPMu9_IP0.clear();
+	    MuonPt_HLT_BPMu3_IP3.clear();
+	    MuonEta_HLT_BPMu3_IP3.clear();
+	    MuonPhi_HLT_BPMu3_IP3.clear();
+	    MuonPt_HLT_BPMu3_IP4.clear();
+	    MuonEta_HLT_BPMu3_IP4.clear();
+	    MuonPhi_HLT_BPMu3_IP4.clear();
+	    MuonPt_HLT_BPMu3_IP5.clear();
+	    MuonEta_HLT_BPMu3_IP5.clear();
+	    MuonPhi_HLT_BPMu3_IP5.clear();
+	    MuonPt_HLT_BPMu3_IP6.clear();
+	    MuonEta_HLT_BPMu3_IP6.clear();
+	    MuonPhi_HLT_BPMu3_IP6.clear();
+	    MuonPt_HLT_BPMu12_IP6.clear();
+	    MuonEta_HLT_BPMu12_IP6.clear();
+	    MuonPhi_HLT_BPMu12_IP6.clear();
+	    DistXY_PVSV.clear();
+	    DistXY_significance_PVSV.clear();
+	    Mu1_IsGlobal.clear();
+	    Mu2_IsGlobal.clear();
+	    Mu3_IsGlobal.clear();
+
+	    Mu1_IsPF.clear();
+	    Mu2_IsPF.clear();
+	    Mu3_IsPF.clear();
+
+
+
+    }
     
     // ------------ method called once each job just before starting event loop  ------------
     void
@@ -1861,6 +2105,12 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
         
       hEvents = fs->make<TH1F>("hEvents","hEvents",10,0,10);
       hEventsAfterGoodCand = fs->make<TH1F>("hEventsAfterGoodCand","hEventsAfterGoodCand",10,0,10);
+
+      //      if(NTripl.size()>0) hEventsAfterGoodCand->Fill(1);
+      hEventsAfterMu1ID = fs->make<TH1F>("hEventsAfterMu1ID","hEventsAfterMu1ID",10,0,10);
+      hEventsAfterMu2ID = fs->make<TH1F>("hEventsAfterMu2ID","hEventsAfterMu2ID",10,0,10);
+      hEventsAfterMu3ID = fs->make<TH1F>("hEventsAfterMu3ID","hEventsAfterMu3ID",10,0,10);
+      hEventsAfterTauMass = fs->make<TH1F>("hEventsAfterTauMass","hEventsAfterTauMass",10,0,10);
         
         tree_ = fs->make<TTree>("ntuple","LFVTau ntuple");
         tree_->Branch("evt", &evt);
@@ -1994,6 +2244,15 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
         tree_->Branch("Muon_emVetoEt05", &Muon_emVetoEt05);
         tree_->Branch("Muon_trackerVetoPt05", &Muon_trackerVetoPt05);
 
+	tree_->Branch("Muon_innerTrack_highPurity", &Muon_innerTrack_highPurity);
+	tree_->Branch("Muon_innerTrack_ValidFraction", &Muon_innerTrack_ValidFraction);
+	tree_->Branch("Muon_Numberofvalidtrackerhits", &Muon_Numberofvalidtrackerhits);
+	tree_->Branch("Muon_validMuonHitComb", &Muon_validMuonHitComb);
+	tree_->Branch("Muon_IP2D_BS", &Muon_IP2D_BS);
+	tree_->Branch("Muon_IP3D_BS", &Muon_IP3D_BS);
+	tree_->Branch("Muon_IP2D_PV", &Muon_IP2D_PV);
+	tree_->Branch("Muon_IP3D_PV", &Muon_IP3D_PV);
+
         tree_->Branch("PVCollection_Size", &PVCollection_Size);
         tree_->Branch("PV_x", &PV_x);
         tree_->Branch("PV_y", &PV_y);
@@ -2018,7 +2277,9 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
         tree_->Branch("Mu1_dRtriggerMatch_Mu9_IP6", &Mu1_dRtriggerMatch_Mu9_IP6); 
         tree_->Branch("Mu1_dRtriggerMatch_Mu12_IP6", &Mu1_dRtriggerMatch_Mu12_IP6); 
 
-
+	tree_->Branch("Mu1_dRtriggerMatch_2017", &Mu1_dRtriggerMatch_2017);
+	tree_->Branch("Mu2_dRtriggerMatch_2017", &Mu2_dRtriggerMatch_2017);
+	tree_->Branch("Mu3_dRtriggerMatch_2017", &Mu3_dRtriggerMatch_2017);
  
         tree_->Branch("Mu2_Pt", &Mu2_Pt);
         tree_->Branch("Mu2_Eta", &Mu2_Eta);
@@ -2037,6 +2298,16 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 	tree_->Branch("Mu3_dRtriggerMatch_Mu7", &Mu3_dRtriggerMatch_Mu7);
 	tree_->Branch("Mu3_dRtriggerMatch_Mu8", &Mu3_dRtriggerMatch_Mu8);
         tree_->Branch("Mu3_TripletIndex", &Mu3_TripletIndex); 
+
+
+	tree_->Branch("Mu1_IsGlobal", &Mu1_IsGlobal);
+	tree_->Branch("Mu2_IsGlobal", &Mu2_IsGlobal);
+	tree_->Branch("Mu3_IsGlobal", &Mu3_IsGlobal);
+
+	tree_->Branch("Mu1_IsPF", &Mu1_IsPF);
+	tree_->Branch("Mu2_IsPF", &Mu2_IsPF);
+	tree_->Branch("Mu3_IsPF", &Mu3_IsPF);
+
 
 	tree_->Branch("dxy_mu1", &dxy_mu1);
 	tree_->Branch("dxy_mu2", &dxy_mu2);
@@ -2095,7 +2366,7 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
         
         tree_->Branch("Triplet_mindca_iso", &Triplet_mindca_iso);
         tree_->Branch("Triplet_relativeiso", &Triplet_relativeiso);
-        
+	tree_->Branch("Triplet_relativeiso2", &Triplet_relativeiso);
         tree_->Branch("RefittedPV_x", &RefittedPV_x);
         tree_->Branch("RefittedPV_y", &RefittedPV_y);
         tree_->Branch("RefittedPV_z", &RefittedPV_z);
@@ -2108,8 +2379,63 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
         tree_->Branch("FlightDistPVSV_Significance", &FlightDistPVSV_Significance);
         tree_->Branch("FlightDistPVSV_chi2", &FlightDistPVSV_chi2);
         
-        
-        
+	tree_->Branch("MuonPt_HLT", &MuonPt_HLT);
+        tree_->Branch("MuonEta_HLT", &MuonEta_HLT);
+        tree_->Branch("MuonPhi_HLT", &MuonPhi_HLT);      
+        tree_->Branch("MuonPt_HLT2017", &MuonPt_HLT2017);
+	tree_->Branch("MuonEta_HLT2017", &MuonEta_HLT2017);
+	tree_->Branch("MuonPhi_HLT2017", &MuonPhi_HLT2017);
+
+
+	tree_->Branch("DistXY_PVSV", &DistXY_PVSV);
+        tree_->Branch("DistXY_significance_PVSV", &DistXY_significance_PVSV);
+	tree_->Branch("Triplet_IsoMu1", &Triplet_IsoMu1);
+	tree_->Branch("Triplet_IsoMu2", &Triplet_IsoMu2);
+        tree_->Branch("Triplet_IsoMu3", &Triplet_IsoMu2);
+	tree_->Branch("FlightDistBS_SV", &FlightDistBS_SV);
+        tree_->Branch("FlightDistBS_SV_Err", &FlightDistBS_SV_Err);
+        tree_->Branch("FlightDistBS_SV_Significance", &FlightDistBS_SV_Significance);
+
+
+
+	if( isBParking){ 
+	tree_->Branch("MuonPt_HLT_BPMu7", &MuonPt_HLT_BPMu7); 
+	tree_->Branch("MuonEta_HLT_BPMu7", &MuonEta_HLT_BPMu7); 
+	tree_->Branch("MuonPhi_HLT_BPMu7", &MuonPhi_HLT_BPMu7); 
+	tree_->Branch("MuonPt_HLT_BPMu8", &MuonPt_HLT_BPMu8); 
+	tree_->Branch("MuonEta_HLT_BPMu8", &MuonEta_HLT_BPMu8);
+	tree_->Branch("MuonPhi_HLT_BPMu8", &MuonPhi_HLT_BPMu8);
+	tree_->Branch("MuonPt_HLT_BPMu8_IP6", &MuonPt_HLT_BPMu8_IP6);
+	tree_->Branch("MuonEta_HLT_BPMu8_IP6", &MuonEta_HLT_BPMu8_IP6);
+	tree_->Branch("MuonPhi_HLT_BPMu8_IP6", & MuonPhi_HLT_BPMu8_IP6);
+	tree_->Branch("MuonPt_HLT_BPMu8_IP5", &MuonPt_HLT_BPMu8_IP5);
+	tree_->Branch("MuonEta_HLT_BPMu8_IP5", &MuonEta_HLT_BPMu8_IP5);
+	tree_->Branch("MuonPhi_HLT_BPMu8_IP5", &MuonPhi_HLT_BPMu8_IP5);  
+	tree_->Branch("MuonPt_HLT_BPMu9_IP0", &MuonPt_HLT_BPMu9_IP0);
+	tree_->Branch("MuonEta_HLT_BPMu9_IP0", &MuonEta_HLT_BPMu9_IP0);
+	tree_->Branch("MuonPhi_HLT_BPMu9_IP0", &MuonPhi_HLT_BPMu9_IP0);
+	tree_->Branch("MuonPt_HLT_BPMu3_IP3", &MuonPt_HLT_BPMu3_IP3);
+	tree_->Branch("MuonEta_HLT_BPMu3_IP3", &MuonEta_HLT_BPMu3_IP3);
+
+	tree_->Branch("MuonPhi_HLT_BPMu3_IP3", &MuonPhi_HLT_BPMu3_IP3);
+	tree_->Branch("MuonPt_HLT_BPMu3_IP4", &MuonPt_HLT_BPMu3_IP4);
+	tree_->Branch("MuonEta_HLT_BPMu3_IP4", &MuonEta_HLT_BPMu3_IP4);
+	tree_->Branch("MuonPhi_HLT_BPMu3_IP4", &MuonPhi_HLT_BPMu3_IP4);
+	tree_->Branch("MuonPt_HLT_BPMu3_IP5", &MuonPt_HLT_BPMu3_IP5);
+	tree_->Branch("MuonEta_HLT_BPMu3_IP5", &MuonEta_HLT_BPMu3_IP5);
+	tree_->Branch("MuonPhi_HLT_BPMu3_IP5", &MuonPhi_HLT_BPMu3_IP5);
+	tree_->Branch("MuonPt_HLT_BPMu3_IP6", &MuonPt_HLT_BPMu3_IP6);
+	tree_->Branch("MuonEta_HLT_BPMu3_IP6", &MuonEta_HLT_BPMu3_IP6);
+	tree_->Branch("MuonPhi_HLT_BPMu3_IP6", &MuonPhi_HLT_BPMu3_IP6);
+	tree_->Branch("MuonPt_HLT_BPMu12_IP6", &MuonPt_HLT_BPMu12_IP6);
+	tree_->Branch("MuonEta_HLT_BPMu12_IP6", &MuonEta_HLT_BPMu12_IP6);
+	tree_->Branch("MuonPhi_HLT_BPMu12_IP6", &MuonPhi_HLT_BPMu12_IP6);
+
+
+
+
+
+	}
         /*  SyncTree_ = fs->make<TTree>("t","Sync ntuple");
          SyncTree_ ->Branch("allmuons_pt",&allmuons_pt);
          SyncTree_->Branch("leadmuon_pt",&leadmuon_pt);
@@ -2136,7 +2462,7 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
     void 
     MiniAnaTau3Mu::endJob() 
     {
-        //  tree_->GetDirectory()->cd();
+        tree_->GetDirectory()->cd();
         tree_->Write();
         
         //  SyncTree_->GetDirectory()->cd();
