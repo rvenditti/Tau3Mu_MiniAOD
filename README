@@ -1,1 +1,3 @@
-First implementation. Tested in CMSSW_10_2_0. To be finalized
+First implementation on tau->3mu skim. Tested in CMSSW_10_2_1. 
+Control channel to be implemented.
+
