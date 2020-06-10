@@ -8,6 +8,8 @@ git clone https://github.com/rvenditti/Tau3Mu_MiniAOD .
 scram b -j20
 
 Skimmer+Ntuplizer sequences can be run with the config files in SkimTools/SkimX/test/ where X=Tau3Mu, PhiPi
+Ntuplizer plugins are: DsPhiPiTreeMakerMINI and MiniAnaTau3Mu
+
 
 
 
