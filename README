@@ -16,5 +16,5 @@ fatal Root Error: @SUB=TStorageFactoryFile::WriteTObject
 Directory ///cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_1/external/slc7_amd64_gcc700/data/DataFormats/PatCandidates/data/CovarianceParameterization_version1.root is not writable
 error probably comes from L856
 
--fix isolation definition
+-fix isolation definition in both ntuplizers
 
