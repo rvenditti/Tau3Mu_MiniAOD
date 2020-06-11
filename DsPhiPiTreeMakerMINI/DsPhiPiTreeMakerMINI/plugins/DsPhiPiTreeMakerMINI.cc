@@ -849,16 +849,15 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 	  //cout<<i<<" vertex ID="<<VtxIdV.at(i)<<" with trk ass. n="<<AssoCandToVtx.at(i).size()<<endl;                                              
 	  std::auto_ptr<reco::TrackCollection> newTrackCollection = std::auto_ptr<reco::TrackCollection>(new TrackCollection);
 
-	  std::vector<reco::TransientTrack> transTracks;
 	  std::vector<reco::TransientTrack> transTracks2;
 
 
 	  for(vector<pat::PackedCandidate>::const_iterator c = AssoCandToVtx.at(i).begin(); c != AssoCandToVtx.at(i).end(); ++c) {
 	    reco::Track myTrack =c->pseudoTrack();
 	    reco::TransientTrack mytt = theTransientTrackBuilder->build(myTrack);
-	    //if(mytt.isValid()){
-	    //transTracks2.push_back(mytt);
-	    // }
+	    if(mytt.isValid()){
+	      transTracks2.push_back(mytt);
+	    }
 	    //cout<<" ----> dereferencing ="<< (c->bestTrack())  <<endl;                                                            
 	    //newTrackCollection->push_back(*(c->bestTrack()));
 	    //newTrackCollection->push_back((c->pseudoTrack()));
@@ -875,16 +874,16 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
 	    }
           }
 	  */
-          //transTracksAssoToVtx.push_back(transTracks);
-          //transTracksAssoToVtx.push_back(transTracks2);
+
+          transTracksAssoToVtx.push_back(transTracks2);
 	 
 	  
           //cout<<" trans Tracks size="<<transTracksAssoToVtx.at(i).size()<<endl;                                                                    
-	  // for(uint f=0;f<transTracksAssoToVtx.at(i).size(); f++){                                                                                          //	    cout<<f<<" stored trtrk eta="<<transTracksAssoToVtx.at(i).at(f).track().eta()<<endl;}
+
 	}
 
        
-	/*
+	
 	
 	std::vector<int> NTripl;
         bool is2Mu=true;
@@ -1624,7 +1623,7 @@ void removeTracks3(vector<reco::TransientTrack> pvTracks, const std::vector<reco
             iEvent.getByToken(puToken_, PupInfo);
             puN = PupInfo->begin()->getTrueNumInteractions();
         }
-	  */
+	  
         
         
         ////Synch Tree//////
