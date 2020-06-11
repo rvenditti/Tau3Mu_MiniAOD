@@ -1,0 +1,6 @@
+crab status -d crab_projects/crab_SkimTau3Mu_BParking_Run2018A_BPH1_v3
+crab status -d crab_projects/crab_SkimTau3Mu_BParking_Run2018A_BPH2_v3
+crab status -d crab_projects/crab_SkimTau3Mu_BParking_Run2018A_BPH3_v3
+crab status -d crab_projects/crab_SkimTau3Mu_BParking_Run2018A_BPH4_v3
+crab status -d crab_projects/crab_SkimTau3Mu_BParking_Run2018A_BPH5_v3
+crab status -d crab_projects/crab_SkimTau3Mu_BParking_Run2018A_BPH6_v3
