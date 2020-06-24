@@ -145,6 +145,8 @@ TwoMuOneTrackSelSeq = cms.Sequence(InitialPlots *
                                OneTrackFilter *
                                PlotsAfterOnePFCand *   
                                looseMuons *
+                               PlotsAfterLooseMuon *
+                               TwoMuonsFilter *
                                DiMuonCand *
                                DiMuonCandFilter *
                                PlotsAfterDiMuonCand *
