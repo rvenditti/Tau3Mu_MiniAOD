@@ -143,6 +143,7 @@ private:
     edm::EDGetTokenT<edm::View<pat::Muon> > muons_;
     edm::EDGetTokenT<edm::View<reco::Vertex> > vertex_;
     //edm::EDGetTokenT<edm::View<reco::Track> > trackToken_;
+//    edm::EDGetTokenT<std::vector<pat::PackedCandidate> > trackToken_;
     edm::EDGetTokenT<edm::View<pat::PackedCandidate> > trackToken_;
     //edm::EDGetTokenT<edm::View<reco::CompositeCandidate> > Cand3Mu_;
     edm::EDGetTokenT<edm::View<reco::CompositeCandidate> > Cand2Mu1Track_;
@@ -247,7 +248,7 @@ private:
     std::vector<double>  FlightDistPVSV2_Significance;
     std::vector<double>  FlightDistPVSV2_chi2;
 
-    std::vector<double>  Track_eta, Track_phi, Track_charge, Track_normalizedChi2, Track_numberOfValidHits, Track_dxy, Track_dxyError, Track_dz, Track_dzError, Track_vx, Track_vy, Track_vz;
+    std::vector<double>  Track_pt, Track_eta, Track_phi, Track_charge, Track_normalizedChi2, Track_numberOfValidHits, Track_dxy, Track_dxyError, Track_dz, Track_dzError, Track_vx, Track_vy, Track_vz;
     std::vector<double>  Tr_Pt, Tr_Phi, Tr_Eta;
     std::vector<int>  Track_pdgId;
     
@@ -288,10 +289,12 @@ DsPhiPiTreeMakerMINI::DsPhiPiTreeMakerMINI(const edm::ParameterSet& iConfig){
     is2016 = iConfig.getUntrackedParameter<bool>("is2016Label");
     is2017= iConfig.getUntrackedParameter<bool>("is2017Label");
     is2018= iConfig.getUntrackedParameter<bool>("is2018Label");
+    isBParking= iConfig.getUntrackedParameter<bool>("isBParkingLabel");
     //is3Mu = iConfig.getUntrackedParameter<bool>("is3MuLabel");
     muons_ = consumes<edm::View<pat::Muon> >  (iConfig.getParameter<edm::InputTag>("muonLabel"));
     vertex_ = consumes<edm::View<reco::Vertex> > (iConfig.getParameter<edm::InputTag>("VertexLabel"));
     //trackToken_ = consumes<edm::View<reco::Track> > (iConfig.getParameter<edm::InputTag>("TracksLabel"));
+//    trackToken_ = consumes<std::vector<pat::PackedCandidate> > (iConfig.getParameter<edm::InputTag>("TracksLabel"));
     trackToken_ = consumes<edm::View<pat::PackedCandidate> > (iConfig.getParameter<edm::InputTag>("TracksLabel"));
     genParticles_ = consumes<edm::View<reco::GenParticle>  > (iConfig.getParameter<edm::InputTag>("genParticleLabel"));
     srcCands_ = consumes<std::vector<pat::PackedCandidate> >(edm::InputTag("packedPFCandidates"));
@@ -876,7 +879,6 @@ cout<<i<<" vtx id="<<VtxIdV.at(i)<<endl;
         cout << "Cand2Mu1Track->size(): " << Cand2Mu1Track->size() << endl;
         
         for(edm::View<reco::CompositeCandidate>::const_iterator PhiIt=Cand2Mu1Track->begin(); PhiIt!=Cand2Mu1Track->end(), trIn2<Cand2Mu1Track->size(); ++PhiIt, ++trIn2){
-            cout << "It n. " << trIn2 << endl;
           
             //Daughter Kinematics at reco+gen level
             const Candidate * c1 = PhiIt->daughter(0)->masterClone().get();
@@ -886,17 +888,16 @@ cout<<i<<" vtx id="<<VtxIdV.at(i)<<endl;
             const pat::Muon *mu2 = dynamic_cast<const pat::Muon *>(c2);
           
             const Candidate * c3 = PhiIt->daughter(2)->masterClone().get();
-//            const reco::Track Track3 = c3->pseudoTrack();
             const reco::Track *Track3 = c3->bestTrack();
             
             const reco::TransientTrack transientTrack3=theTransientTrackBuilder->build( Track3 );
-            cout << "transientTrack3.isValid(): " << transientTrack3.isValid() << endl;
+//            cout << "transientTrack3.isValid(): " << transientTrack3.isValid() << endl;
             if( !(transientTrack3.isValid()) ) continue;
-               
-            cout << "fabs(c1->eta()-c3->eta()): " << fabs(c1->eta()- c3->eta()) << endl;
-            cout << "fabs(c2->eta()-c3->eta()): " << fabs(c2->eta()- c3->eta()) << endl;
             
             //check overlap among the legs of the triplet
+            double dR_13 = sqrt( reco::deltaR2(mu1->eta(), mu1->phi(), c3->eta(), c3->phi()) );
+            double dR_23 = sqrt( reco::deltaR2(mu2->eta(), mu2->phi(), c3->eta(), c3->phi()) );
+            if(dR_13<0.01 || dR_23<0.01) continue;
             if(!(fabs(c1->eta()- c3->eta())>  1.e-6)) continue;
             if(!(fabs(c2->eta()- c3->eta())>  1.e-6)) continue;
             if(!(PhiIt->vertexChi2()>0)) continue;
@@ -927,7 +928,7 @@ cout<<i<<" vtx id="<<VtxIdV.at(i)<<endl;
               reco::Vertex TripletVtx = reco::Vertex(PhiIt->vertex(), PhiIt->vertexCovariance(), PhiIt->vertexChi2(), PhiIt->vertexNdof(), PhiIt->numberOfDaughters() );
               double dphi_pv = -1.0;
               uint primaryvertex_index=0;
-              uint selVtxId;
+              uint selVtxId = 0;
 
               TLorentzVector ThreeCandidate;
               ThreeCandidate.SetPtEtaPhiM(PhiIt->pt(), PhiIt->eta(), PhiIt->phi(), PhiIt->mass());
@@ -971,17 +972,22 @@ cout<<i<<" vtx id="<<VtxIdV.at(i)<<endl;
               }
               else PVertex_bis_fit = false;
                   
-              removeTracks3(transTracksAssoToVtx.at(selVtxId),  SVTrackRef2);
-              
-              cout << "transTracksAssoToVtx.at(selVtxId).size() after: " << transTracksAssoToVtx.at(selVtxId).size() << endl;
-
-              if(transTracksAssoToVtx.at(selVtxId).size() >1){
+              vector<reco::TransientTrack> transTracksAssoToVtx_copy;
+              for(std::vector<reco::TransientTrack>::const_iterator transTrack_it = transTracksAssoToVtx.at(selVtxId).begin(); transTrack_it != transTracksAssoToVtx.at(selVtxId).end(); ++transTrack_it){
+                  transTracksAssoToVtx_copy.push_back(*transTrack_it);
+              }
                   
-                  RefittedPV2_NTracks.push_back(transTracksAssoToVtx.at(selVtxId).size());
+              removeTracks3(transTracksAssoToVtx_copy,  SVTrackRef2);
+              
+              cout << "transTracksAssoToVtx_copy.size() after: " << transTracksAssoToVtx_copy.size() << endl;
+
+              if(transTracksAssoToVtx_copy.size() >1){
+                  
+                  RefittedPV2_NTracks.push_back(transTracksAssoToVtx_copy.size());
 
                   /////////////PV Refit//////////////////////////////
                   KalmanVertexFitter PV_fitter (true);
-                  TransientVertex PVertex = PV_fitter.vertex(transTracksAssoToVtx.at(selVtxId));
+                  TransientVertex PVertex = PV_fitter.vertex(transTracksAssoToVtx_copy);
                   RefittedPV2_isValid.push_back(PVertex.isValid());
                   RefittedPV_Chi2.push_back(PVertex.totalChiSquared());
                   RefittedPV_nDOF.push_back(PVertex.degreesOfFreedom());
@@ -1044,9 +1050,9 @@ cout<<i<<" vtx id="<<VtxIdV.at(i)<<endl;
                       dR2 = DsPhiPiTreeMakerMINI::dRtriggerMatch(*mu2, TriggerObj_DsTau3Mu);
                       dR3 = DsPhiPiTreeMakerMINI::dRtriggerMatchTrk(*Track3, TriggerObj_DsTau3Mu);
                       //cout<<"Trigger Matching: dR1="<<dR1<<" dR2="<<dR2<<" dR3="<<dR3<<endl;
-                      Mu1_dRtriggerMatch.push_back(dR1);
-                      Mu2_dRtriggerMatch.push_back(dR2);
-                      Mu3_dRtriggerMatch.push_back(dR3);
+                      Mu01_dRtriggerMatch.push_back(dR1);
+                      Mu02_dRtriggerMatch.push_back(dR2);
+                      Tr_dRtriggerMatch.push_back(dR3);
 
                       if( isBParking){
                         dR1_Mu8 = DsPhiPiTreeMakerMINI::dRtriggerMatch(*mu1, MuonsObjects_BPMu8);
@@ -1228,9 +1234,9 @@ cout<<i<<" vtx id="<<VtxIdV.at(i)<<endl;
 
                     for (std::vector<pat::PackedCandidate>::const_iterator cand = PFCands->begin(); cand != PFCands->end();++cand) {
                         if(  (cand->pt()>1) && (fabs(cand->eta())<2.4) && (cand->trackerLayersWithMeasurement()>5) && (cand->pixelLayersWithMeasurement()>1)  ){
-                            double dR1 = reco::deltaR2(Track1.eta(), Track1.phi(), cand->eta(), cand->phi() );
-                            double dR2 = reco::deltaR2(Track2.eta(), Track2.phi(), cand->eta(), cand->phi() );
-                            double dR3 = reco::deltaR2(Track3->eta(), Track3->phi(), cand->eta(), cand->phi() );
+                            double dR1 = sqrt( reco::deltaR2(Track1.eta(), Track1.phi(), cand->eta(), cand->phi()) );
+                            double dR2 = sqrt( reco::deltaR2(Track2.eta(), Track2.phi(), cand->eta(), cand->phi()) );
+                            double dR3 = sqrt( reco::deltaR2(Track3->eta(), Track3->phi(), cand->eta(), cand->phi()) );
 
                             if (dR1 < 0.01 || dR2 < 0.01 || dR3 < 0.01) continue;
                             double dz = abs(cand->dz(SVertexPoint));
@@ -1684,6 +1690,31 @@ cout<<i<<" vtx id="<<VtxIdV.at(i)<<endl;
             Muon_hadVetoEt05.push_back(-1);
         }
     }
+    
+    // Loop on tracks
+    edm::View<pat::PackedCandidate>::const_iterator trIt = trackCollection->begin();
+    edm::View<pat::PackedCandidate>::const_iterator trEnd = trackCollection->end();
+    
+    for (; trIt != trEnd; ++trIt)
+    {
+        if( trIt->pt() <= 2 || abs(trIt->eta())>=2.4 || trIt->charge()==0 || trIt->trackerLayersWithMeasurement()<=5 || trIt->pixelLayersWithMeasurement()<1 || (!(trIt->hasTrackDetails())) ) continue;
+        
+        const reco::Track track = ( *(trIt->bestTrack()) );
+    
+        Track_pt.push_back(track.pt());
+        Track_eta.push_back(track.eta());
+        Track_phi.push_back(track.phi());
+        Track_normalizedChi2.push_back(track.normalizedChi2());
+        Track_numberOfValidHits.push_back(track.numberOfValidHits());
+        Track_charge.push_back(track.charge());
+        Track_dxy.push_back(track.dxy());
+        Track_dxyError.push_back(track.dxyError());
+        Track_dz.push_back(track.dz());
+        Track_dzError.push_back(track.dzError());
+        Track_vx.push_back(track.vx());
+        Track_vy.push_back(track.vy());
+        Track_vz.push_back(track.vz());
+    }
 
     if (!iEvent.isRealData()){
         Handle<vector<PileupSummaryInfo> >  PupInfo;
@@ -1885,6 +1916,20 @@ cout<<i<<" vtx id="<<VtxIdV.at(i)<<endl;
     Muon_hadVetoEt05.clear();
     Muon_emVetoEt05.clear();
     Muon_trackerVetoPt05.clear();
+    
+    Track_pt.clear();
+    Track_eta.clear();
+    Track_phi.clear();
+    Track_normalizedChi2.clear();
+    Track_numberOfValidHits.clear();
+    Track_charge.clear();
+    Track_dxy.clear();
+    Track_dz.clear();
+    Track_dxyError.clear();
+    Track_dzError.clear();
+    Track_vx.clear();
+    Track_vy.clear();
+    Track_vz.clear();
 
     PV_x.clear();
     PV_y.clear();
@@ -2261,6 +2306,20 @@ DsPhiPiTreeMakerMINI::beginJob()
     tree_->Branch("Muon_emVetoEt05", &Muon_emVetoEt05);
     tree_->Branch("Muon_trackerVetoPt05", &Muon_trackerVetoPt05);
     
+    tree_->Branch("Track_pt", &Track_pt);
+    tree_->Branch("Track_eta", &Track_eta);
+    tree_->Branch("Track_phi", &Track_phi);
+    tree_->Branch("Track_normalizedChi2", &Track_normalizedChi2);
+    tree_->Branch("Track_numberOfValidHits", &Track_numberOfValidHits);
+    tree_->Branch("Track_charge", &Track_charge);
+    tree_->Branch("Track_dxy", &Track_dxy);
+    tree_->Branch("Track_dxyError", &Track_dxyError);
+    tree_->Branch("Track_dz", &Track_dz);
+    tree_->Branch("Track_dzError", &Track_dzError);
+    tree_->Branch("Track_vx", &Track_vx);
+    tree_->Branch("Track_vy", &Track_vy);
+    tree_->Branch("Track_vz", &Track_vz);
+    
     tree_->Branch("Muon_validMuonHitComb", &Muon_validMuonHitComb);
     tree_->Branch("Muon_innerTrack_ValidFraction", &Muon_innerTrack_ValidFraction);
     tree_->Branch("Muon_Numberofvalidtrackerhits", &Muon_Numberofvalidtrackerhits);
@@ -2333,7 +2392,7 @@ DsPhiPiTreeMakerMINI::beginJob()
    
     tree_->Branch("Triplet_mindca_iso", &Triplet_mindca_iso);
     tree_->Branch("Triplet_relativeiso", &Triplet_relativeiso);
-    tree_->Branch("Triplet_relativeiso2", &Triplet_relativeiso);
+    tree_->Branch("Triplet_relativeiso2", &Triplet_relativeiso2);
 
     tree_->Branch("TripletVtx2_x", &TripletVtx2_x);
     tree_->Branch("TripletVtx2_y", &TripletVtx2_y);
