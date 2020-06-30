@@ -2392,7 +2392,7 @@ DsPhiPiTreeMakerMINI::beginJob()
    
     tree_->Branch("Triplet_mindca_iso", &Triplet_mindca_iso);
     tree_->Branch("Triplet_relativeiso", &Triplet_relativeiso);
-    tree_->Branch("Triplet_relativeiso2", &Triplet_relativeiso);
+    tree_->Branch("Triplet_relativeiso2", &Triplet_relativeiso2);
 
     tree_->Branch("TripletVtx2_x", &TripletVtx2_x);
     tree_->Branch("TripletVtx2_y", &TripletVtx2_y);
