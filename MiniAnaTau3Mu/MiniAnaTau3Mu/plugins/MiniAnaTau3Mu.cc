@@ -2422,7 +2422,7 @@ MiniAnaTau3Mu::beginJob()
     
     tree_->Branch("Triplet_mindca_iso", &Triplet_mindca_iso);
     tree_->Branch("Triplet_relativeiso", &Triplet_relativeiso);
-	tree_->Branch("Triplet_relativeiso2", &Triplet_relativeiso);
+	tree_->Branch("Triplet_relativeiso2", &Triplet_relativeiso2);
     tree_->Branch("RefittedPV_x", &RefittedPV_x);
     tree_->Branch("RefittedPV_y", &RefittedPV_y);
     tree_->Branch("RefittedPV_z", &RefittedPV_z);
