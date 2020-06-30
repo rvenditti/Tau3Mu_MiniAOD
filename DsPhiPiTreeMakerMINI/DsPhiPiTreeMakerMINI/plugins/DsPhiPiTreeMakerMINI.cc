@@ -895,6 +895,9 @@ cout<<i<<" vtx id="<<VtxIdV.at(i)<<endl;
             if( !(transientTrack3.isValid()) ) continue;
             
             //check overlap among the legs of the triplet
+            double dR_13 = sqrt( reco::deltaR2(mu1->eta(), mu1->phi(), c3->eta(), c3->phi()) );
+            double dR_23 = sqrt( reco::deltaR2(mu2->eta(), mu2->phi(), c3->eta(), c3->phi()) );
+            if(dR_13<0.01 || dR_23<0.01) continue;
             if(!(fabs(c1->eta()- c3->eta())>  1.e-6)) continue;
             if(!(fabs(c2->eta()- c3->eta())>  1.e-6)) continue;
             if(!(PhiIt->vertexChi2()>0)) continue;
@@ -2389,7 +2392,7 @@ DsPhiPiTreeMakerMINI::beginJob()
    
     tree_->Branch("Triplet_mindca_iso", &Triplet_mindca_iso);
     tree_->Branch("Triplet_relativeiso", &Triplet_relativeiso);
-    tree_->Branch("Triplet_relativeiso2", &Triplet_relativeiso);
+    tree_->Branch("Triplet_relativeiso2", &Triplet_relativeiso2);
 
     tree_->Branch("TripletVtx2_x", &TripletVtx2_x);
     tree_->Branch("TripletVtx2_y", &TripletVtx2_y);
