@@ -348,7 +348,6 @@ bool tracksMatchByDeltaR(const reco::Track* trk1, const reco::Track* trk2)
 
 bool tracksMatchByDeltaR2(const reco::TransientTrack trk1, const reco::Track* trk2)
 {
-//    cout << "+++ tracksMatchByDeltaR2 " << endl;
 //  cout<<" pv_t eta="<<trk1.track().eta()<<" sv_t eta="<<trk2->eta()<<" deltaR(tk1, tk2)="<<reco::deltaR(trk1.track(), *trk2)<<endl;
   if ( reco::deltaR(trk1.track(), *trk2) < 1.e-2 && trk1.track().charge() == trk2->charge() ) return true;
   else return false;
@@ -902,7 +901,8 @@ if(isAna){
                         if(Cosdphi_3D>dphi_pv){
                             dphi_pv = Cosdphi_3D;
                             primaryvertex_index=VtxIt;
-                            selVtxId=k;
+                            selVtxId=VtxIdV.at(k);
+//                            selVtxId=k;
                         }
                     }
                 }
