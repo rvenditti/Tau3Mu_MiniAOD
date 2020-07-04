@@ -754,24 +754,15 @@ std::vector<uint> SelectedCandIdx;
 
 vector<pat::PackedCandidate> MyPFCands;
 for (std::vector<pat::PackedCandidate>::const_iterator cand = PFCands->begin(); cand != PFCands->end(), kk!= PFCands->size(); ++cand, ++kk) {
-//    cout <<endl<< "Cand. n "<< kk+1 << endl;
     
     if (cand->charge()==0 || cand->vertexRef().isNull() ) continue;
-//    cout << "cand->vertexRef():" << cand->vertexRef().key() << endl;
-//    cout << "cand->pt():" << cand->pt() <<"| cand->eta():"<<cand->eta() << endl;
-//    cout << "cand->fromPV:"<<cand->fromPV(cand->vertexRef().key())<<endl;
+
     int key = cand->vertexRef().key();
     int quality = cand->pvAssociationQuality();
-//    if (quality != pat::PackedCandidate::UsedInFitTight) cout << "!(UsedInFitTight)" << endl;
-//    if (quality != pat::PackedCandidate::UsedInFitLoose) cout << "!(UsedInFitLoose)" << endl;
     if(cand->fromPV(cand->vertexRef().key())<2) continue;
     if( cand->fromPV(cand->vertexRef().key())==2 && quality != pat::PackedCandidate::UsedInFitLoose  ) continue;
     
-    if( !(cand->hasTrackDetails()) ) {cout << "no track details" <<endl; continue;}
-//    if ( !(cand->pseudoTrack()) ) {cout << "no pseudo track" <<endl; continue;}
-//    if ( !(cand->bestTrack()) ) {cout << "no best track" <<endl; continue;}
-//    cout << "-> Track taken" << endl;
-  
+    if ( !(cand->bestTrack()) ) continue;
   
   //      if (quality != pat::PackedCandidate::UsedInFitTight)  continue;
   //      if (quality != pat::PackedCandidate::UsedInFitLoose)  continue;
@@ -912,16 +903,11 @@ if(isAna){
                         if(Cosdphi_3D>dphi_pv){
                             dphi_pv = Cosdphi_3D;
                             primaryvertex_index=VtxIt;
-//                            selVtxId=VtxIdV.at(k);
                             selVtxId=k;
                         }
                     }
                 }
             }
-            
-            cout <<"+++++++++ AssoCandToVtx.at(selVtxId).at(0)->vertexRef().key() ="<< AssoCandToVtx.at(selVtxId).at(0).vertexRef().key() << endl;
-            cout << "VtxIdV.at(selVtxId) = "<<VtxIdV.at(selVtxId)<<endl;
-            cout << "primaryvertex_index:"<< primaryvertex_index<<endl;
             
 //                    cout<<"Cosdphi_3D= "<<dphi_pv<<" selVtxId="<<selVtxId<<" primaryvertex_index="<<primaryvertex_index<<endl;
             std::vector<reco::TransientTrack> pvTracks_original;
