@@ -348,8 +348,9 @@ bool tracksMatchByDeltaR(const reco::Track* trk1, const reco::Track* trk2)
 
 bool tracksMatchByDeltaR2(const reco::TransientTrack trk1, const reco::Track* trk2)
 {
-//    cout << "+++ tracksMatchByDeltaR2 " << endl;
-//  cout<<" pv_t eta="<<trk1.track().eta()<<" sv_t eta="<<trk2->eta()<<" deltaR(tk1, tk2)="<<reco::deltaR(trk1.track(), *trk2)<<endl;
+  //cout << "+++ tracksMatchByDeltaR2 " << endl;
+  cout<<" ++++++++ tracksMatchByDeltaR2 sv_t pt="<<trk2->pt()<<" eta="<<trk2->eta()<<" phi="<<trk2->phi()<<endl;
+  cout<<" ++++++++ tracksMatchByDeltaR2 pv_t pt="<<trk1.track().pt()<<" eta="<<trk1.track().eta()<<" phi="<<trk1.track().phi()<<" deltaR(tk1, tk2)="<<reco::deltaR(trk1.track(), *trk2)<<endl;
   if ( reco::deltaR(trk1.track(), *trk2) < 1.e-2 && trk1.track().charge() == trk2->charge() ) return true;
   else return false;
 }
@@ -359,7 +360,7 @@ void removeTracks(TransientTrackMap& pvTracks_toRefit, const std::vector<reco::T
   //  cout<<"Size PV Trk: "<<(pvTracks_toRefit->first).size()<<endl;
   for ( std::vector<reco::Track*>::const_iterator svTrack = svTracks.begin(); svTrack != svTracks.end(); ++svTrack ){
     for ( TransientTrackMap::iterator pvTrack = pvTracks_toRefit.begin(); pvTrack != pvTracks_toRefit.end(); ++pvTrack ) {
-      cout<<"Eta PV Trk:"<<pvTrack->first->eta()<<endl;
+      //cout<<"Eta PV Trk:"<<pvTrack->first->eta()<<endl;
       if ( tracksMatchByDeltaR(pvTrack->first, *svTrack) ) {
         pvTracks_toRefit.erase(pvTrack);
         break;
@@ -383,10 +384,14 @@ void removeTracks2(std::vector<reco::Track*> pvTracks, const std::vector<reco::T
 
 void removeTracks3(vector<reco::TransientTrack> &pvTracks, const std::vector<reco::Track*> svTracks)
 {
+  cout<<" ++++removeTracks3: tracks associated to PV = "<<pvTracks.size()<<endl;
+  int svtrack_cout = 0;
   for ( std::vector<reco::Track*>::const_iterator svTrack = svTracks.begin(); svTrack != svTracks.end(); ++svTrack ){
+    ++svtrack_cout;
+    cout<<" ++++removeTracks3: looking for matching with svTrack "<<svtrack_cout<<endl;
     for(uint f=0;f<pvTracks.size(); f++){
       if ( tracksMatchByDeltaR2(pvTracks.at(f), *svTrack) ) {
-//        cout<<" track to be erased position: "<<f<<" eta="<<pvTracks.at(f).track().eta()<<endl;
+        cout<<"     track to be erased position: "<<f<<" pt="<<pvTracks.at(f).track().pt()<<" eta="<<pvTracks.at(f).track().eta()<<" phi="<<pvTracks.at(f).track().phi()<<endl;
         pvTracks.erase(pvTracks.begin()+f);
         break;
       }
@@ -483,7 +488,7 @@ gtUtil_->retrieveL1(iEvent, iSetup, algToken_);
 const vector<pair<string, bool> > initialDecisions = gtUtil_->decisionsInitial();
 if (!iEvent.isRealData())
   {
-    cout<<"sto qua is MC"<<endl;
+    //cout<<"sto qua is MC"<<endl;
     for (size_t i_l1t = 0; i_l1t < initialDecisions.size(); i_l1t++)
       {
         string l1tName = (initialDecisions.at(i_l1t)).first;
@@ -855,7 +860,6 @@ if(isAna){
         const pat::Muon *mu3 = dynamic_cast<const pat::Muon *>(c3);
 
         //cout<<"mu1 pt="<<mu1->pt()<<" m2="<<mu2->pt()<<" m3="<<mu3->pt()<<endl;
-        cout<<"----------------------mu1 isGlobal="<<mu1->isGlobalMuon()<<endl;
         TrackRef trk1, trk2, trk3;
         if (mu1->isGlobalMuon()) { trk1 = mu1->get<TrackRef,reco::CombinedMuonTag>();}
         else { trk1 = mu1->get<TrackRef>();}
@@ -888,17 +892,20 @@ if(isAna){
         uint selVtxId = 0;
         
         ThreeCandidate.SetPtEtaPhiM(TauIt->pt(), TauIt->eta(), TauIt->phi(), TauIt->mass());
+        cout<<"Tau pt="<<TauIt->pt()<<" eta="<<TauIt->eta()<<" phi="<<TauIt->phi()<<" mass="<<TauIt->mass()<<endl;
 
+        //loop on privary vertices
+        cout<<"Among "<<VtxIdV.size()<<" vertices we select the closest, i.e. maximum Cosdphi_3D"<<endl;
         if(VtxIdV.size()>0 && vertices->size()>0) {
-            for(uint VtxIt =0;VtxIt<vertices->size();VtxIt++ ){
-//                cout << "vertices n." << VtxIt << endl;
-                for(uint k=0;k<VtxIdV.size();k++){
-//                    cout << "VtxIdV.at("<<k<<") = " << VtxIdV.at(k) << endl;
+            for(uint VtxIt=0; VtxIt<vertices->size(); VtxIt++ ){
+                //cout << "vertex collection n." << VtxIt << " has size "<< VtxIdV.size() << endl;
+                for(uint k=0; k<VtxIdV.size(); k++){
+                    //cout << "   VtxIdV.at("<<k<<") = " << VtxIdV.at(k) << endl;
                     if(VtxIdV[k]==VtxIt){
-//                         cout<<"Vtx id="<<VtxIt<<" x="<<(*vertices)[VtxIt].x()<<endl;
+                        cout<<"     Vtx id="<<VtxIt<<" x="<<(*vertices)[VtxIt].x()<<" y="<<(*vertices)[VtxIt].y()<<" z="<<(*vertices)[VtxIt].z()<<endl;
                         TVector3 Dv3D_reco(TripletVtx.x() - (*vertices)[VtxIt].x(), TripletVtx.y() - (*vertices)[VtxIt].y(), TripletVtx.z() - (*vertices)[VtxIt].z());
                         double Cosdphi_3D = Dv3D_reco.Dot(ThreeCandidate.Vect())/(Dv3D_reco.Mag()*ThreeCandidate.Vect().Mag());
-//                        cout<<"cosDPhi3D="<<Cosdphi_3D<<endl;
+                        cout<<"     cosDPhi3D="<<Cosdphi_3D<<endl;
                         if(Cosdphi_3D>dphi_pv){
                             dphi_pv = Cosdphi_3D;
                             primaryvertex_index=VtxIt;
@@ -909,7 +916,8 @@ if(isAna){
             }
             
             
-//                    cout<<"Cosdphi_3D= "<<dphi_pv<<" selVtxId="<<selVtxId<<" primaryvertex_index="<<primaryvertex_index<<endl;
+            cout<<"Max Cosdphi_3D= "<<dphi_pv<<" selVtxId="<<selVtxId<<" primaryvertex_index="<<primaryvertex_index<<endl;
+            cout<<"Closest PV index before refit: "<<primaryvertex_index<<" x="<<(*vertices)[primaryvertex_index].x()<<" y="<<(*vertices)[primaryvertex_index].y()<<" z="<<(*vertices)[primaryvertex_index].z()<<endl;
             std::vector<reco::TransientTrack> pvTracks_original;
             TransientTrackMap pvTrackMap_refit;
 
@@ -918,7 +926,6 @@ if(isAna){
             //        for(uint t=0; t<transTracksAssoToVtx.at(selVtxId).size(); t++){
             //          cout<<"pv track eta="<<transTracksAssoToVtx.at(selVtxId).at(t).track().eta()<<endl;}
             
-            cout << "transTracksAssoToVtx.at(selVtxId).size() before: " << transTracksAssoToVtx.at(selVtxId).size() << endl;
             
             // PV before removing SV tracks
             TransientVertex PVertex_bis;
@@ -935,6 +942,9 @@ if(isAna){
                 transTracksAssoToVtx_copy.push_back(*transTrack_it);
             }
             
+            cout << "--> Starting PV refit" << endl;
+            GlobalPoint PVertexPos_before  (PVertex_bis.position());
+            cout << "PV before refit associated to "<<transTracksAssoToVtx.at(selVtxId).size()<<" tracks has coordinates: x="<<PVertexPos_before.x()<<" y="<<PVertexPos_before.y()<<" z="<<PVertexPos_before.z()<<endl;
             removeTracks3(transTracksAssoToVtx_copy,  SVTrackRef);
             //        std::vector<reco::TransientTrack> pvTracks_refit;
             
@@ -942,14 +952,13 @@ if(isAna){
             //  pvTracks_refit.push_back(pvTrack->second);}
             
 
-            //cout<<" Closest PV index "<<primaryvertex_index<<" x="<<(*vertices)[primaryvertex_index].x()<<" y="<<(*vertices)[primaryvertex_index].y()<<" z="<<(*vertices)[primaryvertex_index].z()<<endl;
             //        cout<<"after refit pvTracks.size()="<<transTracksAssoToVtx.at(selVtxId).size()<<endl;
 
             if(transTracksAssoToVtx_copy.size() >1){
                 
               RefittedPV_NTracks.push_back(transTracksAssoToVtx_copy.size());
                 
-                cout << "transTracksAssoToVtx_copy.size() after: " << transTracksAssoToVtx_copy.size() << endl;
+              //cout << "transTracksAssoToVtx_copy.size() after: " << transTracksAssoToVtx_copy.size() << endl;
                 
               KalmanVertexFitter PV_fitter (true);
               TransientVertex PVertex = PV_fitter.vertex(transTracksAssoToVtx_copy);
@@ -1214,7 +1223,6 @@ if(isAna){
 
                 /////////////PV Refit//////////////////////////////
 
-                  cout << "PV refit" << endl;
                 //Defining ISO VAR related to the triplet
                 TLorentzVector LV1=TLorentzVector( mu1->px(), mu1->py(), mu1->pz(), mu1->energy() );
                 TLorentzVector LV2=TLorentzVector( mu2->px(), mu2->py(), mu2->pz(), mu2->energy() );
@@ -1289,7 +1297,8 @@ if(isAna){
                 //CachingVertex<5> fittedVertex = vertexFitter.vertex(tracksToVertex);
                 GlobalPoint PVertexPos  (PVertex.position());
                 GlobalPoint SVertexPos  (TripletVtx.x(), TripletVtx.y(), TripletVtx.z());
-                cout<<" PV Coord after refit="<<PVertexPos.x()<<" y="<<PVertexPos.y()<<" z="<<PVertexPos.z()<<endl;
+                cout<<"--> run "<<iEvent.id().run()<<" evt "<<iEvent.id().event()<<" lumi "<<iEvent.luminosityBlock()<<endl;
+                cout<<"--> PV Coord after refit="<<PVertexPos.x()<<" y="<<PVertexPos.y()<<" z="<<PVertexPos.z()<<endl;
                 double FlightDist = TMath::Sqrt( pow(( PVertexPos.x() -SVertexPos.x()),2)+ pow(( PVertexPos.y() -SVertexPos.y()),2) + pow(( PVertexPos.z() -SVertexPos.z()),2));
 
                 VertexDistance3D vertTool;
@@ -2422,11 +2431,7 @@ MiniAnaTau3Mu::beginJob()
     
     tree_->Branch("Triplet_mindca_iso", &Triplet_mindca_iso);
     tree_->Branch("Triplet_relativeiso", &Triplet_relativeiso);
-<<<<<<< HEAD
-    tree_->Branch("Triplet_relativeiso2", &Triplet_relativeiso);
-=======
-	tree_->Branch("Triplet_relativeiso2", &Triplet_relativeiso2);
->>>>>>> upstream/master
+    tree_->Branch("Triplet_relativeiso2", &Triplet_relativeiso2);
     tree_->Branch("RefittedPV_x", &RefittedPV_x);
     tree_->Branch("RefittedPV_y", &RefittedPV_y);
     tree_->Branch("RefittedPV_z", &RefittedPV_z);
