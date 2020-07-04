@@ -348,9 +348,13 @@ bool tracksMatchByDeltaR(const reco::Track* trk1, const reco::Track* trk2)
 
 bool tracksMatchByDeltaR2(const reco::TransientTrack trk1, const reco::Track* trk2)
 {
+<<<<<<< HEAD
   //cout << "+++ tracksMatchByDeltaR2 " << endl;
   cout<<" ++++++++ tracksMatchByDeltaR2 sv_t pt="<<trk2->pt()<<" eta="<<trk2->eta()<<" phi="<<trk2->phi()<<endl;
   cout<<" ++++++++ tracksMatchByDeltaR2 pv_t pt="<<trk1.track().pt()<<" eta="<<trk1.track().eta()<<" phi="<<trk1.track().phi()<<" deltaR(tk1, tk2)="<<reco::deltaR(trk1.track(), *trk2)<<endl;
+=======
+//  cout<<" pv_t eta="<<trk1.track().eta()<<" sv_t eta="<<trk2->eta()<<" deltaR(tk1, tk2)="<<reco::deltaR(trk1.track(), *trk2)<<endl;
+>>>>>>> 6042ae01c3f97ffaef0b05ac8347b8db52b5da9c
   if ( reco::deltaR(trk1.track(), *trk2) < 1.e-2 && trk1.track().charge() == trk2->charge() ) return true;
   else return false;
 }
@@ -761,11 +765,14 @@ std::vector<uint> SelectedCandIdx;
 vector<pat::PackedCandidate> MyPFCands;
 for (std::vector<pat::PackedCandidate>::const_iterator cand = PFCands->begin(); cand != PFCands->end(), kk!= PFCands->size(); ++cand, ++kk) {
     
-  if (cand->charge()==0 || cand->vertexRef().isNull() ) continue;
-  if ( !(cand->bestTrack()) ) continue;
+    if (cand->charge()==0 || cand->vertexRef().isNull() ) continue;
 
-  int key = cand->vertexRef().key();
-  int quality = cand->pvAssociationQuality();
+    int key = cand->vertexRef().key();
+    int quality = cand->pvAssociationQuality();
+    if(cand->fromPV(cand->vertexRef().key())<2) continue;
+    if( cand->fromPV(cand->vertexRef().key())==2 && quality != pat::PackedCandidate::UsedInFitLoose  ) continue;
+    
+    if ( !(cand->bestTrack()) ) continue;
   
   //      if (quality != pat::PackedCandidate::UsedInFitTight)  continue;
   //      if (quality != pat::PackedCandidate::UsedInFitLoose)  continue;
@@ -804,7 +811,6 @@ for(uint i=0; i<VtxIdV.size();i++){
   //vector<MyTrks> tmp_trks;
   //cout<<i<<"----------Stored Vtx id="<<VtxIdV.at(i)<<"---------------"<<endl;
   for (vector<pat::PackedCandidate>::const_iterator myc = MyPFCands.begin(); myc != MyPFCands.end(); ++myc) {
-  
     //cout<<"cand vtx="<<myc->vertexRef().key()<<" cand pt="<<myc->pt()<<endl;
     if(myc->vertexRef().key()==VtxIdV.at(i)) {
       tmp_pt.push_back(myc->pt());
@@ -915,9 +921,13 @@ if(isAna){
                 }
             }
             
+<<<<<<< HEAD
             
             cout<<"Max Cosdphi_3D= "<<dphi_pv<<" selVtxId="<<selVtxId<<" primaryvertex_index="<<primaryvertex_index<<endl;
             cout<<"Closest PV index before refit: "<<primaryvertex_index<<" x="<<(*vertices)[primaryvertex_index].x()<<" y="<<(*vertices)[primaryvertex_index].y()<<" z="<<(*vertices)[primaryvertex_index].z()<<endl;
+=======
+//                    cout<<"Cosdphi_3D= "<<dphi_pv<<" selVtxId="<<selVtxId<<" primaryvertex_index="<<primaryvertex_index<<endl;
+>>>>>>> 6042ae01c3f97ffaef0b05ac8347b8db52b5da9c
             std::vector<reco::TransientTrack> pvTracks_original;
             TransientTrackMap pvTrackMap_refit;
 
@@ -926,6 +936,11 @@ if(isAna){
             //        for(uint t=0; t<transTracksAssoToVtx.at(selVtxId).size(); t++){
             //          cout<<"pv track eta="<<transTracksAssoToVtx.at(selVtxId).at(t).track().eta()<<endl;}
             
+<<<<<<< HEAD
+=======
+            
+            cout << "transTracksAssoToVtx.at(selVtxId).size() before: " << transTracksAssoToVtx.at(selVtxId).size() << endl;
+>>>>>>> 6042ae01c3f97ffaef0b05ac8347b8db52b5da9c
             
             // PV before removing SV tracks
             TransientVertex PVertex_bis;
