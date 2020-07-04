@@ -1,0 +1,135 @@
+DEBUG 2020-06-23 17:45:52.162 UTC: 	 CRAB Client version: 3.3.2005
+DEBUG 2020-06-23 17:45:52.162 UTC: 	 Running on: Linux ui02.recas.ba.infn.it 3.10.0-862.14.4.el7.x86_64 #1 SMP Wed Sep 26 15:12:11 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-06-23 17:45:52.173 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-06-23 17:45:52.173 UTC: 	 Executing command: 'kill'
+DEBUG 2020-06-23 17:45:52.173 UTC: 	 Found CRAB cache file /lustrehome/fsimone/.crab3
+ERROR 2020-06-23 17:45:52.174 UTC: 	 Error: Please indicate the CRAB project directory with --dir=<project-directory>.
+ERROR 2020-06-23 17:45:52.174 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/bin/crab", line 165, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/bin/crab", line 150, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/SubCommand.py", line 278, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/SubCommand.py", line 615, in validateOptions
+    raise ex
+MissingOptionException: [91mError[0m: Please indicate the CRAB project directory with --dir=<project-directory>.
+INFO 2020-06-23 17:45:52.177 UTC: 	 Log file is /lustrehome/fsimone/CMSSW_10_2_18/src/CrabSubmission/Data/DoubleMuonLowMass/SkimTau3Mu/crab.log
+DEBUG 2020-06-25 19:16:31.845 UTC: 	 CRAB Client version: 3.3.2005
+DEBUG 2020-06-25 19:16:31.845 UTC: 	 Running on: Linux ui02.recas.ba.infn.it 3.10.0-862.14.4.el7.x86_64 #1 SMP Wed Sep 26 15:12:11 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-06-25 19:16:31.855 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-06-25 19:16:31.855 UTC: 	 Executing command: 'submit'
+DEBUG 2020-06-25 19:16:31.856 UTC: 	 Found CRAB cache file /lustrehome/fsimone/.crab3
+INFO 2020-06-25 19:16:31.856 UTC: 	 Will use CRAB configuration file crab_T3Mu_rereco2017_RunF_cfg.py
+DEBUG 2020-06-25 19:16:31.856 UTC: 	 Loading CRAB configuration file.
+DEBUG 2020-06-25 19:16:31.858 UTC: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+ERROR 2020-06-25 19:16:31.858 UTC: 	 Working area '/lustrehome/fsimone/CMSSW_10_2_18/src/CrabSubmission/Data/DoubleMuonLowMass/SkimTau3Mu/crab_projects/crab_SkimTau3Mu_rereco2017_Run2017F_Mini_v2' already exists 
+Please change the requestName in the config file
+ERROR 2020-06-25 19:16:31.858 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/bin/crab", line 165, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/bin/crab", line 150, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/submit.py", line 35, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/SubCommand.py", line 323, in __init__
+    getattr(self.configuration.General, 'requestName', None))
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/ClientUtilities.py", line 407, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+ConfigException: Working area '/lustrehome/fsimone/CMSSW_10_2_18/src/CrabSubmission/Data/DoubleMuonLowMass/SkimTau3Mu/crab_projects/crab_SkimTau3Mu_rereco2017_Run2017F_Mini_v2' already exists 
+Please change the requestName in the config file
+INFO 2020-06-25 19:16:31.861 UTC: 	 Log file is /lustrehome/fsimone/CMSSW_10_2_18/src/CrabSubmission/Data/DoubleMuonLowMass/SkimTau3Mu/crab.log
+DEBUG 2020-07-01 12:12:41.974 UTC: 	 CRAB Client version: 3.3.2005
+DEBUG 2020-07-01 12:12:41.974 UTC: 	 Running on: Linux ui02.recas.ba.infn.it 3.10.0-862.14.4.el7.x86_64 #1 SMP Wed Sep 26 15:12:11 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-07-01 12:12:41.989 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-07-01 12:12:41.990 UTC: 	 Executing command: 'submit'
+DEBUG 2020-07-01 12:12:41.991 UTC: 	 Found CRAB cache file /lustrehome/fsimone/.crab3
+INFO 2020-07-01 12:12:41.993 UTC: 	 Will use CRAB configuration file crab_T3Mu_rereco2017_RunC_cfg.py
+DEBUG 2020-07-01 12:12:41.994 UTC: 	 Loading CRAB configuration file.
+DEBUG 2020-07-01 12:12:41.996 UTC: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+ERROR 2020-07-01 12:12:41.998 UTC: 	 Working area '/lustrehome/fsimone/CMSSW_10_2_18/src/CrabSubmission/Data/DoubleMuonLowMass/SkimTau3Mu/crab_projects/crab_SkimTau3Mu_rereco2017_Run2017C_Mini_v5' already exists 
+Please change the requestName in the config file
+ERROR 2020-07-01 12:12:41.998 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/bin/crab", line 165, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/bin/crab", line 150, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/submit.py", line 35, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/SubCommand.py", line 323, in __init__
+    getattr(self.configuration.General, 'requestName', None))
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/ClientUtilities.py", line 407, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+ConfigException: Working area '/lustrehome/fsimone/CMSSW_10_2_18/src/CrabSubmission/Data/DoubleMuonLowMass/SkimTau3Mu/crab_projects/crab_SkimTau3Mu_rereco2017_Run2017C_Mini_v5' already exists 
+Please change the requestName in the config file
+INFO 2020-07-01 12:12:42.016 UTC: 	 Log file is /lustrehome/fsimone/CMSSW_10_2_18/src/CrabSubmission/Data/DoubleMuonLowMass/SkimTau3Mu/crab.log
+DEBUG 2020-07-01 12:13:15.674 UTC: 	 CRAB Client version: 3.3.2005
+DEBUG 2020-07-01 12:13:15.674 UTC: 	 Running on: Linux ui02.recas.ba.infn.it 3.10.0-862.14.4.el7.x86_64 #1 SMP Wed Sep 26 15:12:11 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-07-01 12:13:15.685 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-07-01 12:13:15.685 UTC: 	 Executing command: 'status'
+DEBUG 2020-07-01 12:13:15.688 UTC: 	 Found CRAB cache file /lustrehome/fsimone/.crab3
+ERROR 2020-07-01 12:13:15.691 UTC: 	 Cannot find .requestcache file in CRAB project directory /lustrehome/fsimone/CMSSW_10_2_18/src/CrabSubmission/Data/DoubleMuonLowMass/SkimTau3Mu/crab_projects/crab_SkimTau3Mu_rereco2017_Run2017C_Mini_v5
+ERROR 2020-07-01 12:13:15.691 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/bin/crab", line 165, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/bin/crab", line 150, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/status.py", line 41, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/SubCommand.py", line 278, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/SubCommand.py", line 623, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/SubCommand.py", line 485, in loadLocalCache
+    raise ex
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /lustrehome/fsimone/CMSSW_10_2_18/src/CrabSubmission/Data/DoubleMuonLowMass/SkimTau3Mu/crab_projects/crab_SkimTau3Mu_rereco2017_Run2017C_Mini_v5
+INFO 2020-07-01 12:13:15.694 UTC: 	 Log file is /lustrehome/fsimone/CMSSW_10_2_18/src/CrabSubmission/Data/DoubleMuonLowMass/SkimTau3Mu/crab.log
+DEBUG 2020-07-01 13:17:53.056 UTC: 	 CRAB Client version: 3.3.2005
+DEBUG 2020-07-01 13:17:53.056 UTC: 	 Running on: Linux ui02.recas.ba.infn.it 3.10.0-862.14.4.el7.x86_64 #1 SMP Wed Sep 26 15:12:11 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-07-01 13:17:53.067 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-07-01 13:17:53.068 UTC: 	 Executing command: 'report'
+DEBUG 2020-07-01 13:17:53.110 UTC: 	 Found CRAB cache file /lustrehome/fsimone/.crab3
+ERROR 2020-07-01 13:17:53.112 UTC: 	 Error: crab_projects/crab_SkimTau3Mu_rereco2017_Run2017E_Mini_v5/ is not a valid CRAB project directory.
+ERROR 2020-07-01 13:17:53.112 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/bin/crab", line 165, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/bin/crab", line 150, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/report.py", line 37, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/SubCommand.py", line 278, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/SubCommand.py", line 619, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: crab_projects/crab_SkimTau3Mu_rereco2017_Run2017E_Mini_v5/ is not a valid CRAB project directory.
+INFO 2020-07-01 13:17:53.126 UTC: 	 Log file is /lustrehome/fsimone/CMSSW_10_2_18/src/CrabSubmission/Data/DoubleMuonLowMass/SkimTau3Mu/crab.log
+DEBUG 2020-07-03 08:43:32.567 UTC: 	 CRAB Client version: 3.3.2005
+DEBUG 2020-07-03 08:43:32.567 UTC: 	 Running on: Linux ui02.recas.ba.infn.it 3.10.0-862.14.4.el7.x86_64 #1 SMP Wed Sep 26 15:12:11 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2020-07-03 08:43:32.577 UTC: 	 OpenSSl version: OpenSSL 1.0.2k-fips  26 Jan 2017 (Library: OpenSSL 1.0.2d-fips 9 Jul 2015)
+DEBUG 2020-07-03 08:43:32.577 UTC: 	 Executing command: 'submit'
+DEBUG 2020-07-03 08:43:32.578 UTC: 	 Found CRAB cache file /lustrehome/fsimone/.crab3
+INFO 2020-07-03 08:43:32.578 UTC: 	 Will use CRAB configuration file pickevents_2017E_mini_crab.py
+DEBUG 2020-07-03 08:43:32.578 UTC: 	 Loading CRAB configuration file.
+DEBUG 2020-07-03 08:43:32.580 UTC: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+ERROR 2020-07-03 08:43:32.581 UTC: 	 Working area '/lustrehome/fsimone/CMSSW_10_2_18/src/CrabSubmission/Data/DoubleMuonLowMass/SkimTau3Mu/crab_pickevents_2017D_miniAOD/crab_pickEvents_2017D_miniAOD' already exists 
+Please change the requestName in the config file
+ERROR 2020-07-03 08:43:32.581 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/bin/crab", line 165, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/bin/crab", line 150, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/submit.py", line 35, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/Commands/SubCommand.py", line 323, in __init__
+    getattr(self.configuration.General, 'requestName', None))
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.2005.01/lib/CRABClient/ClientUtilities.py", line 407, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+ConfigException: Working area '/lustrehome/fsimone/CMSSW_10_2_18/src/CrabSubmission/Data/DoubleMuonLowMass/SkimTau3Mu/crab_pickevents_2017D_miniAOD/crab_pickEvents_2017D_miniAOD' already exists 
+Please change the requestName in the config file
+INFO 2020-07-03 08:43:32.611 UTC: 	 Log file is /lustrehome/fsimone/CMSSW_10_2_18/src/CrabSubmission/Data/DoubleMuonLowMass/SkimTau3Mu/crab.log
