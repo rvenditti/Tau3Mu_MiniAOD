@@ -757,6 +757,7 @@ DsPhiPiTreeMakerMINI::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     cout<<"****************GenLevel Info End ********************"<<endl;
     }
 
+    PVCollection_Size = vertices->size();
     uint kk=0;
     std::vector<uint> VtxIdV;
     cout<<"Number of PFCands="<<PFCands->size()<<endl;
@@ -792,7 +793,10 @@ DsPhiPiTreeMakerMINI::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       //      if (quality != pat::PackedCandidate::UsedInFitTight)  continue;
       //      if (quality != pat::PackedCandidate::UsedInFitLoose)  continue;
       // cout<<kk<<" vtx ref key="<<key<<" cand pt="<<cand->pt()<<" vtx x="<<cand->vertexRef()->x()<<endl;                                        */
-  int key = cand->vertexRef().key();
+      int key = cand->vertexRef().key();
+      int quality = cand->pvAssociationQuality();
+      if(cand->fromPV(cand->vertexRef().key())<2) continue;
+      if( cand->fromPV(cand->vertexRef().key())==2 && quality != pat::PackedCandidate::UsedInFitLoose  ) continue;
       VtxIdV.push_back(key);
       SelectedCandIdx.push_back(kk);
       MyPFCands.push_back(*cand);
@@ -936,6 +940,7 @@ cout<<i<<" vtx id="<<VtxIdV.at(i)<<endl;
                 cout << "PV choice! " << endl;
                 cout << "VtxIdV.size(): " << VtxIdV.size() << endl;
                 cout << "vertices->size(): " << vertices->size() << endl;
+            
                 
               if(VtxIdV.size()>0 && vertices->size()>0) {
                 for(uint VtxIt =0;VtxIt<vertices->size();VtxIt++ ){
@@ -2139,6 +2144,9 @@ cout<<i<<" vtx id="<<VtxIdV.at(i)<<endl;
     Mu2_dRtriggerMatch_2017.clear();
     Mu3_dRtriggerMatch_2017.clear();
 
+    MuonPt_HLT.clear();
+    MuonEta_HLT.clear();
+    MuonPhi_HLT.clear();
     MuonPt_HLT2017.clear();
     MuonEta_HLT2017.clear();
     MuonPhi_HLT2017.clear();
@@ -2327,6 +2335,7 @@ DsPhiPiTreeMakerMINI::beginJob()
 
     tree_->Branch("Track_pdgId", &Track_pdgId);
     tree_->Branch("TripletCollectionSize2", &TripletCollectionSize2);
+    tree_->Branch("PVCollection_Size", &PVCollection_Size);
     tree_->Branch("PV_x", &PV_x);
     tree_->Branch("PV_y", &PV_y);
     tree_->Branch("PV_z", &PV_z);
@@ -2458,6 +2467,13 @@ DsPhiPiTreeMakerMINI::beginJob()
     tree_->Branch("Mu1_dRtriggerMatch_2017", &Mu1_dRtriggerMatch_2017);
     tree_->Branch("Mu2_dRtriggerMatch_2017", &Mu2_dRtriggerMatch_2017);
     tree_->Branch("Mu3_dRtriggerMatch_2017", &Mu3_dRtriggerMatch_2017);
+    
+    tree_->Branch("MuonPt_HLT2017", &MuonPt_HLT2017);
+    tree_->Branch("MuonEta_HLT2017", &MuonEta_HLT2017);
+    tree_->Branch("MuonPhi_HLT2017", &MuonPhi_HLT2017);
+    tree_->Branch("MuonPt_HLT", &MuonPt_HLT);
+    tree_->Branch("MuonEta_HLT", &MuonEta_HLT);
+    tree_->Branch("MuonPhi_HLT", &MuonPhi_HLT);
     
     if( isBParking){
       tree_->Branch("MuonPt_HLT_BPMu7", &MuonPt_HLT_BPMu7);
