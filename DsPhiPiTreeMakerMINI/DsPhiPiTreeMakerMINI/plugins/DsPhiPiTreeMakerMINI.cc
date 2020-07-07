@@ -792,7 +792,10 @@ DsPhiPiTreeMakerMINI::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       //      if (quality != pat::PackedCandidate::UsedInFitTight)  continue;
       //      if (quality != pat::PackedCandidate::UsedInFitLoose)  continue;
       // cout<<kk<<" vtx ref key="<<key<<" cand pt="<<cand->pt()<<" vtx x="<<cand->vertexRef()->x()<<endl;                                        */
-  int key = cand->vertexRef().key();
+      int key = cand->vertexRef().key();
+      int quality = cand->pvAssociationQuality();
+      if(cand->fromPV(cand->vertexRef().key())<2) continue;
+      if( cand->fromPV(cand->vertexRef().key())==2 && quality != pat::PackedCandidate::UsedInFitLoose  ) continue;
       VtxIdV.push_back(key);
       SelectedCandIdx.push_back(kk);
       MyPFCands.push_back(*cand);
