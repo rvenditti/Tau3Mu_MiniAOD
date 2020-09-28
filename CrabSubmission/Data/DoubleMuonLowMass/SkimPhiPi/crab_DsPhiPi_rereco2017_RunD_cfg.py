@@ -1,7 +1,7 @@
 from CRABClient.UserUtilities import config, getUsername
 config = config()
 
-config.General.requestName = 'SkimPhiPi_rereco2017_Run2017D_Mini_v0'
+config.General.requestName = 'SkimPhiPi_rereco2017_Run2017D_Mini_v2'
 config.General.workArea = 'crab_projects'
 config.General.transferOutputs = True
 config.General.transferLogs = False
@@ -20,7 +20,7 @@ config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/
 #config.Data.runRange = '193093-193999' # '193093-194075'
 #config.Data.outLFNDirBase = '/store/user/%s/' % (getUsernameFromSiteDB())
 config.Data.publication = True
-config.Data.outputDatasetTag = 'SkimPhiPi_rereco2017_Run2017D_Mini_v0'
+config.Data.outputDatasetTag = 'SkimPhiPi_rereco2017_Run2017D_Mini_v2'
 config.JobType.allowUndistributedCMSSW = True 
 config.Site.storageSite = 'T2_IT_Bari'
 config.Site.ignoreGlobalBlacklist  = True

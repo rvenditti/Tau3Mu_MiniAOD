@@ -13,16 +13,26 @@ process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
-process.load("SkimTools.SkimTau3Mu.Tau3MuSkim_miniAOD_cff")
+process.load("SkimTools.SkimMuonId.MuonIdSkim_miniAOD_cff")
 
 process.GlobalTag.globaltag = '102X_mc2017_realistic_v8' #MC2017
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        #MC DsTau3Mu 2017  --> /DsToTau_To3Mu_MuFilter_TuneCUEP8M1_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM
-        'root://xrootd-cms.infn.it///store/mc/RunIIFall17MiniAODv2/DsToTau_To3Mu_MuFilter_TuneCUEP8M1_13TeV-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/F002221F-CC4B-E911-B5BF-0242AC1C0503.root',
-        'root://xrootd-cms.infn.it///store/mc/RunIIFall17MiniAODv2/DsToTau_To3Mu_MuFilter_TuneCUEP8M1_13TeV-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/EE03A741-AA49-E911-BFC2-001E67DBE3EF.root',
+        #MC BsToPiPi 2017 MINIAOD
+        '/store/mc/RunIIFall17MiniAODv2/BsToPiPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PU2017_12Apr2018_N1_94X_mc2017_realistic_v14-v1/00000/F6D47188-5E42-E811-89ED-00259048A8F4.root',
+        #'/store/mc/RunIIFall17MiniAODv2/BsToPiPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PU2017_12Apr2018_N1_94X_mc2017_realistic_v14-v1/00000/EC86E8D0-5142-E811-A02E-00259075D706.root',
+        #'/store/mc/RunIIFall17MiniAODv2/BsToPiPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PU2017_12Apr2018_N1_94X_mc2017_realistic_v14-v1/00000/DC8432A4-5542-E811-B391-003048CB8610.root',
+        #'/store/mc/RunIIFall17MiniAODv2/BsToPiPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PU2017_12Apr2018_N1_94X_mc2017_realistic_v14-v1/00000/D8099959-4F42-E811-A567-00259048AE00.root',
+        #'/store/mc/RunIIFall17MiniAODv2/BsToPiPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PU2017_12Apr2018_N1_94X_mc2017_realistic_v14-v1/00000/98768C17-6742-E811-A3E0-002590AB3A82.root',
+        #'/store/mc/RunIIFall17MiniAODv2/BsToPiPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PU2017_12Apr2018_N1_94X_mc2017_realistic_v14-v1/00000/860859F0-4B42-E811-AB07-002590FD5A72.root',
+        #'/store/mc/RunIIFall17MiniAODv2/BsToPiPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PU2017_12Apr2018_N1_94X_mc2017_realistic_v14-v1/00000/70A543ED-4642-E811-9472-0CC47A0AD668.root',
+        #'/store/mc/RunIIFall17MiniAODv2/BsToPiPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PU2017_12Apr2018_N1_94X_mc2017_realistic_v14-v1/00000/7088E501-8042-E811-A819-003048CB7A8A.root',
+        #'/store/mc/RunIIFall17MiniAODv2/BsToPiPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PU2017_12Apr2018_N1_94X_mc2017_realistic_v14-v1/00000/568EB9A9-4A42-E811-BBE1-0CC47A57CF08.root',
+        #'/store/mc/RunIIFall17MiniAODv2/BsToPiPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PU2017_12Apr2018_N1_94X_mc2017_realistic_v14-v1/00000/1669E35D-5442-E811-A548-00259075D70C.root',
+        #'/store/mc/RunIIFall17MiniAODv2/BsToPiPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/MINIAODSIM/PU2017_12Apr2018_N1_94X_mc2017_realistic_v14-v1/00000/14650110-4E42-E811-95A1-0CC47A57CE00.root',
+
     ),
             #eventsToProcess = cms.untracked.VEventRange('320012:56448719')
 )
@@ -42,7 +52,7 @@ process.unpackedPatTrigger = cms.EDProducer("PATTriggerObjectStandAloneUnpacker"
 
 process.TreeMakerBkg = cms.EDAnalyzer("MiniAnaTau3Mu",
                                       isMcLabel = cms.untracked.bool(True),
-                                      isAnaLabel = cms.untracked.bool(True),
+                                      isAnaLabel = cms.untracked.bool(False),
                                       is2016Label = cms.untracked.bool(True),
                                       is2017Label = cms.untracked.bool(True),
                                       is2018Label = cms.untracked.bool(True),
@@ -65,8 +75,3 @@ process.Tau3MuSkim = cms.Path(process.ThreeMuonSelSeq*
                               process.unpackedPatTrigger*
                               process.TreeMakerBkg
                      )
-
-
-
-
-

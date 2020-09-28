@@ -17,7 +17,7 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 #process.load('DsPhiPiTreeMaker.DsPhiPiTreeMaker.DsPhiPiMuMuPi_BParking_cff')
 process.load('SkimTools.SkimPhiPi.DsPhiPiMuMuPi_miniAOD_cff')
 
-process.GlobalTag.globaltag = '94X_dataRun2_ReReco_EOY17_v6' #data2017 
+process.GlobalTag.globaltag = '102X_dataRun2_v13' #data_rereco 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",

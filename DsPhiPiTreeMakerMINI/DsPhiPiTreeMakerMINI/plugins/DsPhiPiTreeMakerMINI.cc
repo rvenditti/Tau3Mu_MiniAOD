@@ -253,6 +253,7 @@ private:
     std::vector<int>  Track_pdgId;
     
     std::vector<double> PV_x,  PV_y,  PV_z,  PV_NTracks;
+    std::vector<double> BS_x,  BS_y,  BS_z;
     std::vector<double> Vtx12_x, Vtx23_x, Vtx13_x, Vtx12_y, Vtx23_y, Vtx13_y, Vtx12_z, Vtx23_z, Vtx13_z, Vtx12_Chi2, Vtx23_Chi2, Vtx13_Chi2, Vtx12_nDOF, Vtx23_nDOF, Vtx13_nDOF;
     
     std::vector<int> NGoodTriplets;
@@ -477,10 +478,16 @@ DsPhiPiTreeMakerMINI::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     iEvent.getByToken(token_BeamSpot, beamSpotHandle);
     const reco::BeamSpot& beamspot = *beamSpotHandle.product();
     
-    if ( beamSpotHandle.isValid() ) beamSpot = *beamSpotHandle;
-    else {
-        edm::LogInfo("MyAnalyzer")
-        << "No beam spot available from EventSetup \n";
+    double x_bs = 0.0;
+    double y_bs = 0.0;
+    double z_bs = 0.0;
+    if ( beamSpotHandle.isValid() ) {
+        beamSpot = *beamSpotHandle;
+        x_bs = beamSpot.x0();
+        y_bs = beamSpot.y0();
+        z_bs = beamSpot.z0();
+    } else {
+        cout << "No beam spot available from EventSetup \n" << endl;
     }
 
     Handle<BXVector<GlobalAlgBlk>> alg;
@@ -1323,7 +1330,11 @@ cout<<i<<" vtx id="<<VtxIdV.at(i)<<endl;
                       double BSdistance2D = vertTool2D.distance(BSstate, TripletVtx).value();
                       double BSdist_err2D = vertTool2D.distance(BSstate, TripletVtx).error();
                       double BSdist_sign2D =vertTool2D.distance(BSstate, TripletVtx).significance();
-                      
+                     
+                     BS_x.push_back(x_bs);
+                     BS_y.push_back(y_bs);
+                     BS_z.push_back(z_bs);
+ 
                      FlightDistPVSV2.push_back(distance);
                      FlightDistPVSV2_Err.push_back(dist_err);
                      FlightDistPVSV2_Significance.push_back(dist_sign);
@@ -1390,6 +1401,11 @@ cout<<i<<" vtx id="<<VtxIdV.at(i)<<endl;
                         RefittedPV2_x.push_back(-99);
                         RefittedPV2_y.push_back(-99);
                         RefittedPV2_z.push_back(-99);
+
+                        BS_x.push_back(-99);
+                        BS_y.push_back(-99);
+                        BS_z.push_back(-99);
+
                         //RefittedPV2_Chi2.push_back(PVertex.);
                         Vtx12_Chi2.push_back(-99);
                         Vtx12_nDOF.push_back(-99);
@@ -1940,6 +1956,10 @@ cout<<i<<" vtx id="<<VtxIdV.at(i)<<endl;
     PV_y.clear();
     PV_z.clear();
     PV_NTracks.clear();
+
+    BS_x.clear();
+    BS_y.clear();
+    BS_z.clear();
     
     Vtx12_x.clear();
     Vtx23_x.clear();
@@ -2340,6 +2360,10 @@ DsPhiPiTreeMakerMINI::beginJob()
     tree_->Branch("PV_y", &PV_y);
     tree_->Branch("PV_z", &PV_z);
     tree_->Branch("PV_NTracks", &PV_NTracks);
+
+    tree_->Branch("BS_x", &BS_x);
+    tree_->Branch("BS_y", &BS_y);
+    tree_->Branch("BS_z", &BS_z);
 
     tree_->Branch("Vtx12_x", &Vtx12_x);
     tree_->Branch("Vtx23_x", &Vtx23_x);

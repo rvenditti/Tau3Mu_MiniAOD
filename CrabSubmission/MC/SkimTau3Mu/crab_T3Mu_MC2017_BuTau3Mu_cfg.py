@@ -1,7 +1,7 @@
 from CRABClient.UserUtilities import config, getUsername
 config = config()
 
-config.General.requestName = 'SkimTau3Mu_MC2017_BuTau3Mu_Mini_v2'
+config.General.requestName = 'SkimTau3Mu_MC2017_BuTau3Mu_Mini_v4'
 config.General.workArea = 'crab_projects'
 config.General.transferOutputs = True
 config.General.transferLogs = False
@@ -18,7 +18,7 @@ config.Data.splitting = 'Automatic'
 #config.Data.unitsPerJob = 20
 #config.Data.outLFNDirBase = '/store/user/%s/' % (getUsernameFromSiteDB())
 config.Data.publication = True
-config.Data.outputDatasetTag = 'SkimTau3Mu_MC2017_BuTau3Mu_Mini_v2'
+config.Data.outputDatasetTag = 'SkimTau3Mu_MC2017_BuTau3Mu_Mini_v4'
 config.JobType.allowUndistributedCMSSW = True 
 config.Site.storageSite = 'T2_IT_Bari'
 config.Site.ignoreGlobalBlacklist  = True
