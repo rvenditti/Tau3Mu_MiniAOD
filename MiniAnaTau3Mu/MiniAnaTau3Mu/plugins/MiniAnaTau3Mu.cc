@@ -211,6 +211,13 @@ private:
     std::vector<double> RefTrack1_Pt, RefTrack1_Eta, RefTrack1_Phi, RefTrack1_TripletIndex;
     std::vector<double> RefTrack2_Pt, RefTrack2_Eta, RefTrack2_Phi, RefTrack2_TripletIndex;
     std::vector<double> RefTrack3_Pt, RefTrack3_Eta, RefTrack3_Phi, RefTrack3_TripletIndex;
+
+    std::vector<double> RefittedSV_Chi2, RefittedSV_nDOF;
+
+    std::vector<double> IsoTrackMu1_Pt, IsoTrackMu1_Eta, IsoTrackMu1_Phi;
+    std::vector<double> IsoTrackMu2_Pt, IsoTrackMu2_Eta, IsoTrackMu2_Phi;
+    std::vector<double> IsoTrackMu3_Pt, IsoTrackMu3_Eta, IsoTrackMu3_Phi;
+
     std::vector<float> Mu1_dRtriggerMatch, Mu2_dRtriggerMatch, Mu3_dRtriggerMatch;
     std::vector<float> Mu1_dRtriggerMatch_Mu7, Mu2_dRtriggerMatch_Mu7, Mu3_dRtriggerMatch_Mu7;
     std::vector<float> Mu1_dRtriggerMatch_Mu8, Mu2_dRtriggerMatch_Mu8, Mu3_dRtriggerMatch_Mu8;
@@ -944,9 +951,10 @@ if(isAna){
                     KalmanVertexFitter SVfitter (true);
                     TransientVertex SVertex_ref = SVfitter.vertex(Ttracks);
                     vector < TransientTrack > ttrks = SVertex_ref.refittedTracks(); 
-                    cout<<"ttrks.size() :"<<ttrks.size()<<endl;
+                    //cout<<"ttrks.size() :"<<ttrks.size()<<endl;
 
                     if(SVertex_ref.isValid() && SVertex_ref.hasRefittedTracks() && ttrks.size()>2){
+                        //cout<<"VALID ref SV chi2="<<SVertex_ref.totalChiSquared()<<" NDF="<<SVertex_ref.degreesOfFreedom()<<endl;
                         reco::Track SVTrack1 =ttrks.at(0).track();
                         reco::Track SVTrack2 =ttrks.at(1).track();
                         reco::Track SVTrack3 =ttrks.at(2).track();
@@ -962,10 +970,16 @@ if(isAna){
                         RefTrack1_Pt.push_back(SVTrack1.pt()); RefTrack1_Eta.push_back(SVTrack1.eta()); RefTrack1_Phi.push_back(SVTrack1.phi()); RefTrack1_TripletIndex.push_back(TripletIndex);
                         RefTrack2_Pt.push_back(SVTrack2.pt()); RefTrack2_Eta.push_back(SVTrack2.eta()); RefTrack2_Phi.push_back(SVTrack2.phi()); RefTrack2_TripletIndex.push_back(TripletIndex);
                         RefTrack3_Pt.push_back(SVTrack3.pt()); RefTrack3_Eta.push_back(SVTrack3.eta()); RefTrack3_Phi.push_back(SVTrack3.phi()); RefTrack3_TripletIndex.push_back(TripletIndex);
+
+                        RefittedSV_Chi2.push_back(SVertex_ref.totalChiSquared());
+                        RefittedSV_nDOF.push_back(SVertex_ref.degreesOfFreedom());
                     } else {
-                        RefTrack1_Pt.push_back(-99); RefTrack1_Eta.push_back(-99); RefTrack1_Phi.push_back(-99); RefTrack1_TripletIndex.push_back(-99);
-                        RefTrack2_Pt.push_back(-99); RefTrack2_Eta.push_back(-99); RefTrack2_Phi.push_back(-99); RefTrack2_TripletIndex.push_back(-99);
-                        RefTrack3_Pt.push_back(-99); RefTrack3_Eta.push_back(-99); RefTrack3_Phi.push_back(-99); RefTrack3_TripletIndex.push_back(-99);
+                        RefTrack1_Pt.push_back(-99); RefTrack1_Eta.push_back(-99); RefTrack1_Phi.push_back(-99); RefTrack1_TripletIndex.push_back(TripletIndex);
+                        RefTrack2_Pt.push_back(-99); RefTrack2_Eta.push_back(-99); RefTrack2_Phi.push_back(-99); RefTrack2_TripletIndex.push_back(TripletIndex);
+                        RefTrack3_Pt.push_back(-99); RefTrack3_Eta.push_back(-99); RefTrack3_Phi.push_back(-99); RefTrack3_TripletIndex.push_back(TripletIndex);
+
+                        RefittedSV_Chi2.push_back(-99);
+                        RefittedSV_nDOF.push_back(-99);
                     }
 
                     ///////////////Check Trigger Matching///////////////
@@ -1102,11 +1116,11 @@ if(isAna){
                     TransientVertex DiMu12Vtx = DiMu12_fitter.vertex(SVTracks12_Vtx);
                     if(DiMu12Vtx.isValid()){
                         Vtx12_Chi2.push_back(DiMu12Vtx.totalChiSquared());
-                        cout << "Vtx12_Chi2: " << DiMu12Vtx.totalChiSquared() << endl;
+                        //cout << "Vtx12_Chi2: " << DiMu12Vtx.totalChiSquared() << endl;
                         Vtx12_nDOF.push_back(DiMu12Vtx.degreesOfFreedom());
                         GlobalPoint DiMu12Pos (DiMu12Vtx.position());
                         Vtx12_x.push_back(DiMu12Pos.x());
-                        cout <<"Vtx12_x: " <<DiMu12Pos.x() << endl;
+                        //cout <<"Vtx12_x: " <<DiMu12Pos.x() << endl;
                         Vtx12_y.push_back(DiMu12Pos.y());
                         Vtx12_z.push_back(DiMu12Pos.z());
                     }else{
@@ -1224,13 +1238,13 @@ if(isAna){
                     Triplet_IsoMu2.push_back(sumPtTrack2);
                     Triplet_IsoMu3.push_back(sumPtTrack3);
 
+                    /////////////////Defining variables related to PV and SV positions and errors//////////////////////
                     GlobalPoint PVertexPos  (PVertex.position());
                     GlobalPoint SVertexPos  (TripletVtx.x(), TripletVtx.y(), TripletVtx.z());
 
                     VertexState PVstate(PVertex.position(),PVertex.positionError());
                     //cout<<"PV position="<<PVertex.position()<<endl;
                     //cout<<"PV covariance matrix: \n"<<PVertex.positionError().matrix()<<endl;
-
                     //cout<<"SV position="<<TripletVtx.position()<<endl;
                     //cout<<"SV covariance matrix: \n"<<TripletVtx.error()<<endl;
 
@@ -1305,7 +1319,98 @@ if(isAna){
                     dxyErr_mu1.push_back(signed_IP2D_mu1.second.error());
                     dxyErr_mu2.push_back(signed_IP2D_mu2.second.error());
                     dxyErr_mu3.push_back(signed_IP2D_mu3.second.error());
-          
+
+                    /////////////////Study on phi->KK and K*->Kpi decays//////////////////////
+                    /////mu1
+                    double mu1_track_dR = 9999.;
+                    double IsoTrack1_Pt  = -99, IsoTrack1_Eta = -99, IsoTrack1_Phi = -99; 
+                    for (std::vector<pat::PackedCandidate>::const_iterator cand = PFCands->begin(); cand != PFCands->end(); ++cand) {
+                        if(! ((cand->pt()>1) && (fabs(cand->eta())<2.4) && (cand->trackerLayersWithMeasurement()>5) && (cand->pixelLayersWithMeasurement()>1) && (cand->trackHighPurity())) ) continue;
+                        if (cand->charge()*Track1.charge() > 0) continue; //skip same charge
+                        reco::Track add_track = *(cand->bestTrack());
+                        //skip track matching with mu2 and mu3
+                        double dR2 = sqrt( reco::deltaR2(Track2.eta(), Track2.phi(), add_track.eta(), add_track.phi()) );
+                        double dR3 = sqrt( reco::deltaR2(Track3.eta(), Track3.phi(), add_track.eta(), add_track.phi()) );
+                        if(dR2<0.03 || dR3<0.03) continue;
+
+                        reco::TransientTrack add_ttrack = theTransientTrackBuilder->build(*(cand->bestTrack()));
+                        //build mu1-track vertex
+                        std::vector<reco::TransientTrack> mu1_track;
+                        mu1_track.push_back(transientTrack1);
+                        mu1_track.push_back(add_ttrack);
+                        //vertex fit
+                        KalmanVertexFitter mu1_track_fitter (true);
+                        TransientVertex mu1_track_vtx = mu1_track_fitter.vertex(mu1_track);
+                        if(!mu1_track_vtx.isValid()) continue;
+                        if(mu1_track_vtx.totalChiSquared()>100) continue; //loose cut on vertex chi2
+                        
+                        //mu1-track collimation
+                        double dR1 = sqrt( reco::deltaR2(Track1.eta(), Track1.phi(), add_track.eta(), add_track.phi()) );
+                        if (dR1 < mu1_track_dR) {mu1_track_dR = dR1; IsoTrack1_Pt = add_track.pt(); IsoTrack1_Eta = add_track.eta(); IsoTrack1_Phi = add_track.phi();}
+                    }//loop on tracks
+                    //cout<<"min mu1 dR="<<mu1_track_dR<<" iso track pt="<<IsoTrack1_Pt<<" eta="<<IsoTrack1_Eta<<" phi="<<IsoTrack1_Phi<<endl;
+                    IsoTrackMu1_Pt.push_back(IsoTrack1_Pt); IsoTrackMu1_Eta.push_back(IsoTrack1_Eta); IsoTrackMu1_Phi.push_back(IsoTrack1_Phi); 
+
+                    /////mu2
+                    double mu2_track_dR = 9999.;
+                    double IsoTrack2_Pt  = -99, IsoTrack2_Eta = -99, IsoTrack2_Phi = -99; 
+                    for (std::vector<pat::PackedCandidate>::const_iterator cand = PFCands->begin(); cand != PFCands->end(); ++cand) {
+                        if(! ((cand->pt()>1) && (fabs(cand->eta())<2.4) && (cand->trackerLayersWithMeasurement()>5) && (cand->pixelLayersWithMeasurement()>1) && (cand->trackHighPurity())) ) continue;
+                        if (cand->charge()*Track2.charge() > 0) continue; //skip same charge
+                        reco::Track add_track = *(cand->bestTrack());
+                        //skip track matching with mu1 and mu3
+                        double dR1 = sqrt( reco::deltaR2(Track1.eta(), Track1.phi(), add_track.eta(), add_track.phi()) );
+                        double dR3 = sqrt( reco::deltaR2(Track3.eta(), Track3.phi(), add_track.eta(), add_track.phi()) );
+                        if(dR1<0.03 || dR3<0.03) continue;
+
+                        reco::TransientTrack add_ttrack = theTransientTrackBuilder->build(*(cand->bestTrack()));
+                        //build mu2-track vertex
+                        std::vector<reco::TransientTrack> mu2_track;
+                        mu2_track.push_back(transientTrack2);
+                        mu2_track.push_back(add_ttrack);
+                        //vertex fit
+                        KalmanVertexFitter mu2_track_fitter (true);
+                        TransientVertex mu2_track_vtx = mu2_track_fitter.vertex(mu2_track);
+                        if(!mu2_track_vtx.isValid()) continue;
+                        if(mu2_track_vtx.totalChiSquared()>100) continue; //loose cut on vertex chi2
+                        
+                        //mu2-track collimation
+                        double dR2 = sqrt( reco::deltaR2(Track2.eta(), Track2.phi(), add_track.eta(), add_track.phi()) );
+                        if (dR2 < mu2_track_dR) {mu2_track_dR = dR2; IsoTrack2_Pt = add_track.pt(); IsoTrack2_Eta = add_track.eta(); IsoTrack2_Phi = add_track.phi();}
+                    }//loop on tracks
+                    //cout<<"min mu2 dR="<<mu2_track_dR<<" iso track pt="<<IsoTrack2_Pt<<" eta="<<IsoTrack2_Eta<<" phi="<<IsoTrack2_Phi<<endl;
+                    IsoTrackMu2_Pt.push_back(IsoTrack2_Pt); IsoTrackMu2_Eta.push_back(IsoTrack2_Eta); IsoTrackMu2_Phi.push_back(IsoTrack2_Phi); 
+
+                    /////mu3
+                    double mu3_track_dR = 9999.;
+                    double IsoTrack3_Pt  = -99, IsoTrack3_Eta = -99, IsoTrack3_Phi = -99; 
+                    for (std::vector<pat::PackedCandidate>::const_iterator cand = PFCands->begin(); cand != PFCands->end(); ++cand) {
+                        if(! ((cand->pt()>1) && (fabs(cand->eta())<2.4) && (cand->trackerLayersWithMeasurement()>5) && (cand->pixelLayersWithMeasurement()>1) && (cand->trackHighPurity())) ) continue;
+                        if (cand->charge()*Track3.charge() > 0) continue; //skip same charge
+                        reco::Track add_track = *(cand->bestTrack());
+                        //skip track matching with mu1 and mu2
+                        double dR1 = sqrt( reco::deltaR2(Track1.eta(), Track1.phi(), add_track.eta(), add_track.phi()) );
+                        double dR2 = sqrt( reco::deltaR2(Track2.eta(), Track2.phi(), add_track.eta(), add_track.phi()) );
+                        if(dR1<0.03 || dR2<0.03) continue;
+
+                        reco::TransientTrack add_ttrack = theTransientTrackBuilder->build(*(cand->bestTrack()));
+                        //build mu3-track vertex
+                        std::vector<reco::TransientTrack> mu3_track;
+                        mu3_track.push_back(transientTrack3);
+                        mu3_track.push_back(add_ttrack);
+                        //vertex fit
+                        KalmanVertexFitter mu3_track_fitter (true);
+                        TransientVertex mu3_track_vtx = mu3_track_fitter.vertex(mu3_track);
+                        if(!mu3_track_vtx.isValid()) continue;
+                        if(mu3_track_vtx.totalChiSquared()>100) continue; //loose cut on vertex chi2
+                        
+                        //mu3-track collimation
+                        double dR3 = sqrt( reco::deltaR2(Track3.eta(), Track3.phi(), add_track.eta(), add_track.phi()) );
+                        if (dR3 < mu3_track_dR) {mu3_track_dR = dR3; IsoTrack3_Pt = add_track.pt(); IsoTrack3_Eta = add_track.eta(); IsoTrack3_Phi = add_track.phi();}
+                    }//loop on tracks
+                    //cout<<"min mu3 dR="<<mu3_track_dR<<" iso track pt="<<IsoTrack3_Pt<<" eta="<<IsoTrack3_Eta<<" phi="<<IsoTrack3_Phi<<endl;
+                    IsoTrackMu3_Pt.push_back(IsoTrack3_Pt); IsoTrackMu3_Eta.push_back(IsoTrack3_Eta); IsoTrackMu3_Phi.push_back(IsoTrack3_Phi); 
+
                 }else{ //!(PVertex.isValid() && TauIt->vertexChi2() >0)
                     Mu1_Pt.push_back(-99);
                     Mu1_Eta.push_back(-99);
@@ -1371,6 +1476,16 @@ if(isAna){
                     Vtx13_y.push_back(-99);
                     Vtx13_z.push_back(-99);
                     
+                    RefTrack1_Pt.push_back(-99); RefTrack1_Eta.push_back(-99); RefTrack1_Phi.push_back(-99); RefTrack1_TripletIndex.push_back(-99);
+                    RefTrack2_Pt.push_back(-99); RefTrack2_Eta.push_back(-99); RefTrack2_Phi.push_back(-99); RefTrack2_TripletIndex.push_back(-99);
+                    RefTrack3_Pt.push_back(-99); RefTrack3_Eta.push_back(-99); RefTrack3_Phi.push_back(-99); RefTrack3_TripletIndex.push_back(-99);
+                    RefittedSV_Chi2.push_back(-99);
+                    RefittedSV_nDOF.push_back(-99);
+
+                    IsoTrackMu1_Pt.push_back(-99); IsoTrackMu1_Eta.push_back(-99); IsoTrackMu1_Phi.push_back(-99); 
+                    IsoTrackMu2_Pt.push_back(-99); IsoTrackMu2_Eta.push_back(-99); IsoTrackMu2_Phi.push_back(-99); 
+                    IsoTrackMu3_Pt.push_back(-99); IsoTrackMu3_Eta.push_back(-99); IsoTrackMu3_Phi.push_back(-99); 
+
                     Mu1_dRtriggerMatch.push_back(-99);
                     Mu2_dRtriggerMatch.push_back(-99);
                     Mu3_dRtriggerMatch.push_back(-99);
@@ -1747,7 +1862,8 @@ for(edm::View<pat::Muon>::const_iterator mu=muons->begin(); mu!=muons->end(), k<
     evt  = iEvent.id().event();
     run  = iEvent.id().run();
     lumi = iEvent.luminosityBlock();
-    
+   
+    //cout<<"Fillin ntuple evt="<<evt<<" run="<<run<<" lumi="<<lumi<<endl; 
     //SyncTree_->Fill();
     tree_->Fill();
     
@@ -1975,6 +2091,21 @@ for(edm::View<pat::Muon>::const_iterator mu=muons->begin(); mu!=muons->end(), k<
     RefTrack3_Eta.clear();
     RefTrack3_Phi.clear();
     RefTrack3_TripletIndex.clear();
+
+    RefittedSV_Chi2.clear();
+    RefittedSV_nDOF.clear();
+
+    IsoTrackMu1_Pt.clear();
+    IsoTrackMu1_Eta.clear();
+    IsoTrackMu1_Phi.clear();
+
+    IsoTrackMu2_Pt.clear();
+    IsoTrackMu2_Eta.clear();
+    IsoTrackMu2_Phi.clear();
+
+    IsoTrackMu3_Pt.clear();
+    IsoTrackMu3_Eta.clear();
+    IsoTrackMu3_Phi.clear();
 
     Mu1_dRtriggerMatch_2017.clear();
     Mu2_dRtriggerMatch_2017.clear();
@@ -2363,6 +2494,19 @@ void MiniAnaTau3Mu::beginJob() {
     tree_->Branch("RefTrack3_Eta",          &RefTrack3_Eta);
     tree_->Branch("RefTrack3_Phi",          &RefTrack3_Phi);
     tree_->Branch("RefTrack3_TripletIndex", &RefTrack3_TripletIndex);
+
+    tree_->Branch("RefittedSV_Chi2", &RefittedSV_Chi2);
+    tree_->Branch("RefittedSV_nDOF", &RefittedSV_nDOF);
+
+    tree_->Branch("IsoTrackMu1_Pt",         &IsoTrackMu1_Pt);
+    tree_->Branch("IsoTrackMu1_Eta",        &IsoTrackMu1_Eta);
+    tree_->Branch("IsoTrackMu1_Phi",        &IsoTrackMu1_Phi);
+    tree_->Branch("IsoTrackMu2_Pt",         &IsoTrackMu2_Pt);
+    tree_->Branch("IsoTrackMu2_Eta",        &IsoTrackMu2_Eta);
+    tree_->Branch("IsoTrackMu2_Phi",        &IsoTrackMu2_Phi);
+    tree_->Branch("IsoTrackMu3_Pt",         &IsoTrackMu3_Pt);
+    tree_->Branch("IsoTrackMu3_Eta",        &IsoTrackMu3_Eta);
+    tree_->Branch("IsoTrackMu3_Phi",        &IsoTrackMu3_Phi);
 
     tree_->Branch("GenMatchMu1_SimPt", &GenMatchMu1_SimPt);
     tree_->Branch("GenMatchMu2_SimPt", &GenMatchMu2_SimPt);
