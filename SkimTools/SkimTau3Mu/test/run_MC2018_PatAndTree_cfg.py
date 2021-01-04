@@ -13,16 +13,15 @@ process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
-process.load("SkimTools.SkimTau3Mu.Tau3MuSkim_miniAOD_noHLT_cff")
+process.load("SkimTools.SkimTau3Mu.Tau3MuSkim_miniAOD_cff")
 
-process.GlobalTag.globaltag = '102X_mc2017_realistic_v8' #MC2017
+process.GlobalTag.globaltag = '102X_upgrade2018_realistic_v20' #MC2018 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        #MC DsTau3Mu 2017  --> /DsToTau_To3Mu_MuFilter_TuneCUEP8M1_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM
-        'root://xrootd-cms.infn.it///store/mc/RunIIFall17MiniAODv2/DsToTau_To3Mu_MuFilter_TuneCUEP8M1_13TeV-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/F002221F-CC4B-E911-B5BF-0242AC1C0503.root',
-        'root://xrootd-cms.infn.it///store/mc/RunIIFall17MiniAODv2/DsToTau_To3Mu_MuFilter_TuneCUEP8M1_13TeV-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/EE03A741-AA49-E911-BFC2-001E67DBE3EF.root',
+      'root://xrootd-cms.infn.it///store/mc/RunIIAutumn18DRPremix/BdToKPi_BMuonFilter_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/AODSIM/102X_upgrade2018_realistic_v15-v2/10000/D2B83C0F-432E-E040-885B-E213E2BD1541.root' 
     ),
             #eventsToProcess = cms.untracked.VEventRange('320012:56448719')
 )
